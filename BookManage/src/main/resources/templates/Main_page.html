@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>도서 검색</title>
 </head>
 <body>
-
+<h1>도서 검색</h1>
+<form th:action="@{/books}" method="get">
+    <label for="keyword">도서명:</label>
+    <input type="text" id="keyword" name="keyword" required>
+    <button type="submit">검색</button>
+</form>
 </body>
 </html>
