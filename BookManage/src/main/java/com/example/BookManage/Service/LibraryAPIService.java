@@ -1,5 +1,6 @@
 package com.example.BookManage.Service;
 
+import com.example.BookManage.Config.ApiKeyProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +15,18 @@ import java.util.List;
 @Service
 public class LibraryAPIService {
     private final RestTemplate restTemplate;
-    private final String apiKey = "c365c8c0beefd22c516b37a3b4d56ab1b73d0a7e3668542040f762c7e9f033d0"; // 발급받은 API 키
+    private final ApiKeyProperties apiKeyProperties;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public LibraryAPIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public LibraryAPIService(RestTemplate restTemplate, ApiKeyProperties apiKeyProperties, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
+        this.apiKeyProperties = apiKeyProperties;
         this.objectMapper = objectMapper;
     }
 
     public List<String> getBookList(String keyword) {
+        String apiKey = apiKeyProperties.getKeys().get("library");
         String url = "https://www.data4library.kr/api/srchBooks?authKey=" + apiKey + "&keyword=" + keyword + "&format=json";
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
