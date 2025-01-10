@@ -2,7 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>도서 검색</title>
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"></script>
+    <script type="text/javascript">
+        function naverLoginInit() {
+            var naverLogin = new naver.LoginWithNaverId({
+                clientId: 'yK3bTrjiPdvRq7G895gn',
+                callbackUrl: 'http://localhost:8080/',
+                isPopup: false,
+                loginButton: {color: 'green', type: 1, height: 50} // 버튼 디자인 설정
+            });
+
+            naverLogin.init();
+        }
+
+        window.onload = function() {
+            naverLoginInit();
+        }
+    </script>
 </head>
 <body>
 <h1>도서 검색</h1>
@@ -11,5 +27,6 @@
     <input type="text" id="keyword" name="keyword" required>
     <button type="submit">검색</button>
 </form>
+<div id="naverIdLogin"></div>
 </body>
 </html>
