@@ -7,7 +7,7 @@
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
         input, button { padding: 8px; margin-top: 10px; }
         .result { margin-top: 20px; }
-        .login-btn { margin-top: 20px; }
+        .login-btn, .user-info { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -18,11 +18,18 @@
     <button type="submit">검색</button>
 </form>
 
-<!-- 네이버 로그인 버튼 -->
-<div class="login-btn">
+<!-- 로그인 버튼 (세션에 nickname이 없을 때만 표시) -->
+<div class="login-btn" th:if="${session.nickname == null}">
     <a th:href="@{/naver/login}">
         <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인 버튼">
     </a>
 </div>
+
+<!-- 로그인된 사용자 정보 (세션에 nickname이 있을 때만 표시) -->
+<div class="user-info" th:if="${session.nickname != null}">
+    <p><strong>환영합니다, <span th:text="${session.nickname}"></span>님!</strong></p>
+    <a th:href="@{/logout}">로그아웃</a>
+</div>
+
 </body>
 </html>

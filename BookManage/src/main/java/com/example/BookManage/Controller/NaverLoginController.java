@@ -1,8 +1,8 @@
 package com.example.BookManage.Controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -37,8 +37,8 @@ public class NaverLoginController {
     @GetMapping("/naver/callback")
     public String naverCallback(@RequestParam("code") String code,
                                 @RequestParam("state") String state,
-                                Model model) {
-        // 액세스 토큰 요청
+                                HttpSession session) {  // 세션 추가
+
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
                 + "&client_id=" + clientId
                 + "&client_secret=" + clientSecret
@@ -58,11 +58,11 @@ public class NaverLoginController {
 
         Map<String, String> response = (Map<String, String>) profileResponse.get("response");
         String nickname = response.get("nickname");
-        String email = response.get("email");
 
-        model.addAttribute("nickname", nickname);
-        model.addAttribute("email", email);
+        // 세션에 닉네임 저장
+        session.setAttribute("nickname", nickname);
 
-        return "profile";
+        // 리다이렉트 (예: 메인 페이지로 이동)
+        return "Main_page";
     }
 }
