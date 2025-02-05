@@ -2,14 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <title>도서 검색 결과</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // 서버에서 가져온 로그인된 사용자명 (Thymeleaf를 통해 설정)
+        var loggedInUser = "[[${session.nickname}]]";
+
+        function bookmarkBook(bookName) {
+            if (!loggedInUser || loggedInUser === "null") {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/bookmark",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    book_title: bookName,
+                }),
+                success: function(response) {
+                    alert("북마크에 추가되었습니다!");
+                },
+                error: function() {
+                    alert("오류가 발생했습니다.");
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 <h1>도서 검색 결과</h1>
 <ul>
-    <li th:each="book : ${books}" th:text="${book}"></li> <!-- 도서명 출력 -->
+    <li th:each="book : ${books}">
+        <span th:text="${book}"></span>
+        <button th:attr="onclick='bookmarkBook(\'' + ${book} + '\')'">북마크</button>
+    </li>
 </ul>
+
 <div th:if="${books.size() == 0}">
     <p>검색 결과가 없습니다.</p>
 </div>
+
 </body>
 </html>
