@@ -1,6 +1,7 @@
 package com.example.BookManage.Service;
 
 import com.example.BookManage.Config.ApiKeyProperties;
+import com.example.BookManage.Dto.BookDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class LibraryAPIService {
         this.objectMapper = objectMapper;
     }
 
-    public List<String> getBookList(String keyword) {
+    public List<BookDto> getBookList(String keyword) {
         String apiKey = apiKeyProperties.getKeys().get("library");
         String url = "https://www.data4library.kr/api/srchBooks?authKey=" + apiKey + "&keyword=" + keyword + "&format=json";
 
@@ -36,27 +37,28 @@ public class LibraryAPIService {
                 JsonNode root = objectMapper.readTree(response.getBody());
                 JsonNode docs = root.path("response").path("docs");
 
-                List<String> bookTitles = new ArrayList<>();
+                List<BookDto> bookList = new ArrayList<>();
                 if(docs.isArray()){
                     for (JsonNode doc : docs){
                         JsonNode book = doc.path("doc");
-                        String bookTitle = book.path("bookname").asText();
-                        String bookAuth = book.path("authors").asText();
-                        String bookPub = book.path("publisher").asText();
-                        String bookPub_year = book.path("publication_year").asText();
-                        String genre = book.path("class_no").asText();
-                        String ISBN = book.path("isbn13").asText();
-                        String img = book.path("bookImageURL").asText();
-                        bookTitles.add(bookTitle);
+                        BookDto bookDto = new BookDto();
+                        bookDto.setBookTitle(book.path("bookname").asText());
+                        bookDto.setBookAuth(book.path("authors").asText());
+                        bookDto.setBookPub(book.path("publisher").asText());
+                        bookDto.setBookPubYear(book.path("publication_year").asText());
+                        bookDto.setGenre(book.path("class_no").asText());
+                        bookDto.setISBN(book.path("isbn13").asText());
+                        bookDto.setImg(book.path("bookImageURL").asText());
+                        bookList.add(bookDto);
                     }
                 }
-                return bookTitles;
+                return bookList;
             } catch (Exception e) {
                 e.printStackTrace();
-                return List.of("Json 파싱 실패");
+                return List.of(new BookDto());
             }
         } else {
-            return List.of("API 호출 실패" + response.getStatusCode());
+            return List.of(new BookDto());
         }
     }
 }

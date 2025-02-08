@@ -18,4 +18,22 @@ public class BookEntity {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "bookAuth")
+    private String bookAuth;
+
+    @Column(name = "bookPub")
+    private String bookPub;
+
+    @Column(name = "bookPubYear")
+    private String bookPubYear;
+
+    @Column(name = "genre")
+    private String genre;
+
+    @Column(name = "ISBN")
+    private String ISBN;
+
+    @Column(name = "img")
+    private String img;
+
 }

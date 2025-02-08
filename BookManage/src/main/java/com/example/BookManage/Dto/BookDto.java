@@ -6,10 +6,10 @@ import lombok.Data;
 public class BookDto {
     private String bookTitle;
     private String username;
-    private String author;
-    private String publisher;
-    private String publicationYear;
+    private String bookAuth;
+    private String bookPub;
+    private String bookPubYear;
     private String genre;
-    private String isbn;
-    private String bookImageUrl;
+    private String ISBN;
+    private String img;
 }
