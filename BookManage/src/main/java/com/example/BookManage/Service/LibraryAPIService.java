@@ -41,6 +41,12 @@ public class LibraryAPIService {
                     for (JsonNode doc : docs){
                         JsonNode book = doc.path("doc");
                         String bookTitle = book.path("bookname").asText();
+                        String bookAuth = book.path("authors").asText();
+                        String bookPub = book.path("publisher").asText();
+                        String bookPub_year = book.path("publication_year").asText();
+                        String genre = book.path("class_no").asText();
+                        String ISBN = book.path("isbn13").asText();
+                        String img = book.path("bookImageURL").asText();
                         bookTitles.add(bookTitle);
                     }
                 }

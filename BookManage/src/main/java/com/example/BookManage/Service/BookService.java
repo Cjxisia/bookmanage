@@ -16,7 +16,7 @@ public class BookService {
     public void savebooks(BookDto bookDto){
         BookEntity bookEntity = new BookEntity();
 
-        bookEntity.setBook_title(bookDto.getBook_title());
+        bookEntity.setBookTitle(bookDto.getBookTitle());
         bookEntity.setUsername(bookDto.getUsername());
 
         bookRepository.save(bookEntity);
