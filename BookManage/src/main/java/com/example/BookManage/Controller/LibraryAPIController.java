@@ -29,7 +29,7 @@ public class LibraryAPIController {
     public String getBooks(@RequestParam(name = "keyword") String keyword, Model model, HttpSession session) {
         session.setAttribute("keyword", keyword);
         List<BookDto> bookList = libraryapiService.getBookList(keyword);
-        model.addAttribute("books", bookList); // 데이터를 Thymeleaf로 전달
-        return "books_page"; // templates/books_page.html 파일로 이동
+        model.addAttribute("books", bookList);
+        return "books_page";
     }
 }

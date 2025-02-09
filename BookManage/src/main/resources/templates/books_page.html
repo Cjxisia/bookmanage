@@ -5,10 +5,9 @@
     <title>도서 검색 결과</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // 서버에서 가져온 로그인된 사용자명 (Thymeleaf를 통해 설정)
         var loggedInUser = "[[${session.nickname}]]";
 
-        function bookmarkBook(bookName) {
+        function bookmarkBook(bookTitle, bookAuth, bookPub, bookPubYear, ISBN, img) {
             if (!loggedInUser || loggedInUser === "null") {
                 alert("로그인이 필요합니다.");
                 return;
@@ -49,6 +48,8 @@
 
         <!-- 출판연도 출력 -->
         <span th:text="${book.bookPubYear}">출판 연도</span> <br>
+
+        <span th:text="${book.genre}">책 장르</span> <br>
 
         <!-- ISBN 출력 -->
         <span th:text="${book.ISBN}">ISBN</span> <br>
