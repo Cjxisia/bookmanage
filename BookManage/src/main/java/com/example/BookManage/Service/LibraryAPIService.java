@@ -27,37 +27,44 @@ public class LibraryAPIService {
         this.objectMapper = objectMapper;
     }
 
-    public List<BookDto> getBookList(String keyword) {
-        String apiKey = apiKeyProperties.getKeys().get("library");
-        String url = "https://www.data4library.kr/api/srchBooks?authKey=" + apiKey + "&keyword=" + keyword + "&format=json";
+    public List<BookDto> getBookInfoByTitle(String title) {
+        String apiKey = apiKeyProperties.getKeys().get("aladin");
+        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=" + title + "&MaxResults=10&Start=1&SearchTarget=Book&output=JS";
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        List<BookDto> bookLists = new ArrayList<>();
+
         if (response.getStatusCode() == HttpStatus.OK) {
             try {
                 JsonNode root = objectMapper.readTree(response.getBody());
-                JsonNode docs = root.path("response").path("docs");
+                JsonNode itemNode = root.path("item");
 
-                List<BookDto> bookList = new ArrayList<>();
-                if (docs.isArray()) {
-                    for (JsonNode doc : docs) {
-                        JsonNode book = doc.path("doc");
-                        String isbn = book.path("isbn13").asText();
+                if (itemNode.isArray()) {
+                    for (JsonNode bookNode : itemNode) {
+                        BookDto bookDto = new BookDto();
+                        bookDto.setBookTitle(bookNode.path("title").asText());
+                        bookDto.setBookAuth(bookNode.path("author").asText());
+                        bookDto.setBookPub(bookNode.path("publisher").asText());
+                        bookDto.setBookPubYear(bookNode.path("pubDate").asText());
+                        bookDto.setISBN(bookNode.path("isbn").asText());
+                        bookDto.setImg(bookNode.path("cover").asText());
+                        bookDto.setGenre(bookNode.path("categoryName").asText());
+                        bookDto.setDes(bookNode.path("description").asText());
 
-                        bookList.addAll(getBookInfoByIsbn(isbn));
+                        bookLists.add(bookDto);
                     }
+                } else {
+                    System.out.println("No books found for the given title.");
                 }
-                System.out.println("bookList:" + bookList);
-                return bookList;
             } catch (Exception e) {
                 e.printStackTrace();
-                return Collections.emptyList();
             }
-        }else {
-            return Collections.emptyList();
         }
+
+        return bookLists;
     }
 
-    private List<BookDto> getBookInfoByIsbn(String isbn) {
+    public List<BookDto> getBookInfoByIsbn(String isbn) {
         String apiKey = apiKeyProperties.getKeys().get("library");
         String url = "http://data4library.kr/api/usageAnalysisList?authKey=" + apiKey + "&isbn13=" + isbn + "&format=json";
 
@@ -71,7 +78,6 @@ public class LibraryAPIService {
                 if (!bookNode.isMissingNode()) {
                     BookDto bookDto = new BookDto();
                     bookDto.setBookTitle(bookNode.path("bookname").asText());
-                    System.out.println("bookList2: " + bookNode.path("bookname").asText());
                     bookDto.setBookAuth(bookNode.path("authors").asText());
                     bookDto.setBookPub(bookNode.path("publisher").asText());
                     bookDto.setBookPubYear(bookNode.path("publication_year").asText());
@@ -89,5 +95,33 @@ public class LibraryAPIService {
             }
         }
         return bookLists;
+    }
+
+    public List<BookDto> getBookInfoByKeyword(String keyword) {
+        String apiKey = apiKeyProperties.getKeys().get("library");
+        String url = "https://www.data4library.kr/api/srchBooks?authKey=" + apiKey + "&keyword=" + keyword + "&format=json";
+
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            try {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                JsonNode docs = root.path("response").path("docs");
+
+                List<BookDto> bookList = new ArrayList<>();
+                if (docs.isArray()) {
+                    for (JsonNode doc : docs) {
+                        JsonNode book = doc.path("doc");
+                        String isbn = book.path("isbn13").asText();
+                    }
+                }
+                System.out.println("bookList:" + bookList);
+                return bookList;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return Collections.emptyList();
+            }
+        }else {
+            return Collections.emptyList();
+        }
     }
 }

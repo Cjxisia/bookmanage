@@ -32,7 +32,8 @@ public class BooksController {
                               HttpSession session, Model model) {
 
         String username = (String) session.getAttribute("nickname");
-        String keyword = (String) session.getAttribute("keyword");
+        String search= (String) session.getAttribute("search");
+        String classi = (String) session.getAttribute("classi");
 
         BookDto bookDto = new BookDto();
         bookDto.setBookTitle(bookTitle);
@@ -45,6 +46,6 @@ public class BooksController {
 
         bookService.savebooks(bookDto);
 
-        return "redirect:/books?keyword=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+        return "redirect:/books?keyword=" + URLEncoder.encode(search, StandardCharsets.UTF_8);
     }
 }

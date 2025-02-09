@@ -26,9 +26,10 @@ public class LibraryAPIController {
     }
 
     @GetMapping("/books")
-    public String getBooks(@RequestParam(name = "keyword") String keyword, Model model, HttpSession session) {
-        session.setAttribute("keyword", keyword);
-        List<BookDto> bookList = libraryapiService.getBookList(keyword);
+    public String getBooks(@RequestParam(name = "keyword") String title, Model model, HttpSession session) {
+        session.setAttribute("classi", "title");
+        session.setAttribute("search", title); //제목이냐 키워드냐 저자냐 출판사냐에 따라서 저장되는값이 다름
+        List<BookDto> bookList = libraryapiService.getBookInfoByTitle(title);
         model.addAttribute("books", bookList);
         return "books_page";
     }
