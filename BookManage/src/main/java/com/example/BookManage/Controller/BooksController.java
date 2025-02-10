@@ -32,9 +32,10 @@ public class BooksController {
                               HttpSession session, Model model) {
 
         String username = (String) session.getAttribute("nickname");
-        String search= (String) session.getAttribute("search");
-        String classi = (String) session.getAttribute("classi");
+        String searchType= (String) session.getAttribute("searchType");
+        String searchText = (String) session.getAttribute("searchText");
 
+        System.out.println("booktile = " + bookTitle);
         BookDto bookDto = new BookDto();
         bookDto.setBookTitle(bookTitle);
         bookDto.setBookAuth(bookAuth);
@@ -46,6 +47,6 @@ public class BooksController {
 
         bookService.savebooks(bookDto);
 
-        return "redirect:/books?keyword=" + URLEncoder.encode(search, StandardCharsets.UTF_8);
+        return "redirect:/books?keyword=" + URLEncoder.encode(searchText, StandardCharsets.UTF_8);
     }
 }

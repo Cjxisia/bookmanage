@@ -36,7 +36,11 @@ public class LibraryAPIService {
 
         if (response.getStatusCode() == HttpStatus.OK) {
             try {
-                JsonNode root = objectMapper.readTree(response.getBody());
+                String jsonResponse = response.getBody();
+
+                jsonResponse = jsonResponse.replace("\\'", "'");
+
+                JsonNode root = objectMapper.readTree(jsonResponse);
                 JsonNode itemNode = root.path("item");
 
                 if (itemNode.isArray()) {
