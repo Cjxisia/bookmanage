@@ -41,6 +41,11 @@ public class LibraryAPIService {
                 jsonResponse = jsonResponse.replace("\\'", "'");
 
                 JsonNode root = objectMapper.readTree(jsonResponse);
+                JsonNode totalResultsNode = root.path("totalResults");
+                int totalResults = totalResultsNode.asInt();
+
+                System.out.println("Total Results: " + totalResults);
+
                 JsonNode itemNode = root.path("item");
 
                 if (itemNode.isArray()) {
