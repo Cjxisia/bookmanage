@@ -27,9 +27,9 @@ public class LibraryAPIService {
         this.objectMapper = objectMapper;
     }
 
-    public List<BookDto> getBookInfoByTitle(String title) {
+    public List<BookDto> getBookInfo(String searchtext, String searchtype) {
         String apiKey = apiKeyProperties.getKeys().get("aladin");
-        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=" + title + "&MaxResults=10&Start=1&SearchTarget=Book&output=JS";
+        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=" + searchtext + "&QueryType=" + searchtype +"&MaxResults=10&Start=1&SearchTarget=Book&output=JS";
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         List<BookDto> bookLists = new ArrayList<>();

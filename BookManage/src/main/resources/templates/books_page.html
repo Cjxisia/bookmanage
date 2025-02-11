@@ -7,7 +7,7 @@
     <script>
         var loggedInUser = "[[${session.nickname}]]";
 
-        function bookmarkBook(bookTitle, bookAuth, bookPub, bookPubYear, ISBN, img) {
+        function bookmarkBook(bookTitle, bookAuth, bookPub, bookPubYear, des, genre, ISBN, img) {
             if (!loggedInUser || loggedInUser === "null") {
                 alert("로그인이 필요합니다.");
                 return;
@@ -21,6 +21,8 @@
                          bookAuth: bookAuth,
                          bookPub: bookPub,
                          bookPubYear: bookPubYear,
+                         des: des,
+                         genre: genre,
                          ISBN: ISBN,
                          img: img }),
                 success: function(response) {
@@ -46,14 +48,12 @@
         <!-- 출판사 출력 -->
         <span th:text="${book.bookPub}">출판사</span> <br>
 
-        <span th:text="${book.Genre}">카테고리</span> <br>
-
-        <span th:text="${book.Des}">줄거리</span> <br>
-
         <!-- 출판연도 출력 -->
         <span th:text="${book.bookPubYear}">출판 연도</span> <br>
 
-        <span th:text="${book.genre}">책 장르</span> <br>
+        <span th:text="${book.Des}">줄거리</span> <br>
+
+        <span th:text="${book.Genre}">카테고리</span> <br>
 
         <!-- ISBN 출력 -->
         <span th:text="${book.ISBN}">ISBN</span> <br>
@@ -62,7 +62,15 @@
         <img th:src="${book.img}" alt="Book Image" width="100" height="150"><br>
 
         <!-- 북마크 버튼, bookTitle을 함수에 전달 -->
-        <button th:attr="onclick='bookmarkBook(\'' + ${book.bookTitle} + '\', \'' + ${book.bookAuth} + '\', \'' + ${book.bookPub} + '\', \'' + ${book.bookPubYear} + '\', \'' + ${book.ISBN} + '\', \'' + ${book.img} + '\')'">북마크</button>
+        <button th:attr="onclick='bookmarkBook(\''
+        + ${book.bookTitle} + '\', \''
+        + ${book.bookAuth} + '\', \''
+        + ${book.bookPub} + '\', \''
+        + ${book.bookPubYear} + '\', \''
+        + ${book.Des} + '\', \''
+        + ${book.Genre} + '\', \''
+        + ${book.ISBN} + '\', \''
+        + ${book.img} + '\')'">북마크</button>
         <hr>
     </li>
 </ul>

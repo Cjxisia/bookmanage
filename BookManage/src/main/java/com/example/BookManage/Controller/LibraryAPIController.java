@@ -38,7 +38,7 @@ public class LibraryAPIController {
         System.out.println("검색타입"+searchType);
         System.out.println("검색어"+ searchText);
 
-        List<BookDto> bookList = libraryapiService.getBookInfoByTitle(searchText);
+        List<BookDto> bookList = libraryapiService.getBookInfo(searchText, searchType);
         model.addAttribute("books", bookList);
         return "books_page";
     }

@@ -59,10 +59,8 @@ public class NaverLoginController {
         Map<String, String> response = (Map<String, String>) profileResponse.get("response");
         String nickname = response.get("nickname");
 
-        // 세션에 닉네임 저장
         session.setAttribute("nickname", nickname);
 
-        // 리다이렉트 (예: 메인 페이지로 이동)
         return "Main_page";
     }
 }

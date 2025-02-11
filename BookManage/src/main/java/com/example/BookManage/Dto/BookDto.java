@@ -14,8 +14,8 @@ public class BookDto {
     private String genre;
     private String ISBN;
     private String img;
+    private String des;
 
-    private String des;  // 책 소개
     private int loanCount;  // 대출 횟수
     private List<String> recommendList;  // 추천 도서 목록
     private List<String> keywordList;  // 키워드 목록

@@ -30,6 +30,9 @@ public class BookEntity {
     @Column(name = "genre")
     private String genre;
 
+    @Column(name = "des")
+    private String des;
+
     @Column(name = "ISBN")
     private String ISBN;
 
