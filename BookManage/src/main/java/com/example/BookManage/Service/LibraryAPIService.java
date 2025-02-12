@@ -2,6 +2,7 @@ package com.example.BookManage.Service;
 
 import com.example.BookManage.Config.ApiKeyProperties;
 import com.example.BookManage.Dto.BookDto;
+import com.example.BookManage.Dto.BookResponseDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class LibraryAPIService {
         this.objectMapper = objectMapper;
     }
 
-    public List<BookDto> getBookInfo(String searchtext, String searchtype) {
+    public BookResponseDto getBookInfo(String searchtext, String searchtype) {
         String apiKey = apiKeyProperties.getKeys().get("aladin");
         String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=" + searchtext + "&QueryType=" + searchtype +"&MaxResults=10&Start=1&SearchTarget=Book&output=JS";
 
@@ -63,14 +64,14 @@ public class LibraryAPIService {
                         bookLists.add(bookDto);
                     }
                 } else {
-                    System.out.println("No books found for the given title.");
+                    System.out.println("No books found for the given text.");
                 }
+                return new BookResponseDto(totalResults, bookLists);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        return bookLists;
+        return new BookResponseDto(0, new ArrayList<>());
     }
 
     public List<BookDto> getBookInfoByIsbn(String isbn) {

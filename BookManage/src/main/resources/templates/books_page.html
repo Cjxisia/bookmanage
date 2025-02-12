@@ -37,6 +37,7 @@
 </head>
 <body>
 <h1>도서 검색 결과</h1>
+<h2>총 검색 결과: <span th:text="${totalResults}"></span>권</h2>
 <ul>
     <li th:each="book : ${books}">
         <!-- 도서 제목 출력 -->
@@ -74,6 +75,12 @@
         <hr>
     </li>
 </ul>
+
+<div id="pagination">
+    <span th:each="i : ${#numbers.sequence(1, (totalResults / 10) + 1)}">
+        <a th:href="@{/books(searchText=${searchText}, searchType=${searchType}, page=${i})}" th:text="${i}"></a>
+    </span>
+</div>
 
 <div th:if="${books.size() == 0}">
     <p>검색 결과가 없습니다.</p>

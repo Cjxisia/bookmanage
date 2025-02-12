@@ -1,6 +1,7 @@
 package com.example.BookManage.Controller;
 
 import com.example.BookManage.Dto.BookDto;
+import com.example.BookManage.Dto.BookResponseDto;
 import com.example.BookManage.Service.LibraryAPIService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,10 @@ public class LibraryAPIController {
         System.out.println("검색타입"+searchType);
         System.out.println("검색어"+ searchText);
 
-        List<BookDto> bookList = libraryapiService.getBookInfo(searchText, searchType);
-        model.addAttribute("books", bookList);
+        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, searchType);
+        model.addAttribute("books", bookResponse.getBookLists());
+        model.addAttribute("totalResults", bookResponse.getTotalResults());
+
         return "books_page";
     }
 }
