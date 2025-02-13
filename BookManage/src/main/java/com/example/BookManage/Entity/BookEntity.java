@@ -27,10 +27,10 @@ public class BookEntity {
     @Column(name = "bookPubYear")
     private String bookPubYear;
 
-    @Column(name = "genre")
-    private String genre;
+    @Column(name = "discount")
+    private String discount;
 
-    @Column(name = "des")
+    @Column(name = "des", length = 500)
     private String des;
 
     @Column(name = "ISBN")

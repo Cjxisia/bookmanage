@@ -7,7 +7,7 @@
     <script>
         var loggedInUser = "[[${session.nickname}]]";
 
-        function bookmarkBook(bookTitle, bookAuth, bookPub, bookPubYear, des, genre, ISBN, img) {
+        function bookmarkBook(bookTitle, bookAuth, bookPub, bookPubYear, des, discount, ISBN, img) {
             if (!loggedInUser || loggedInUser === "null") {
                 alert("로그인이 필요합니다.");
                 return;
@@ -22,7 +22,7 @@
                          bookPub: bookPub,
                          bookPubYear: bookPubYear,
                          des: des,
-                         genre: genre,
+                         discount: discount,
                          ISBN: ISBN,
                          img: img }),
                 success: function(response) {
@@ -52,9 +52,9 @@
         <!-- 출판연도 출력 -->
         <span th:text="${book.bookPubYear}">출판 연도</span> <br>
 
-        <span th:text="${book.Des}">줄거리</span> <br>
+        <span th:text="${#strings.length(book.des) > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
 
-        <span th:text="${book.Genre}">카테고리</span> <br>
+        <span th:text="${book.discount}">가격</span> <br>
 
         <!-- ISBN 출력 -->
         <span th:text="${book.ISBN}">ISBN</span> <br>
@@ -68,8 +68,8 @@
         + ${book.bookAuth} + '\', \''
         + ${book.bookPub} + '\', \''
         + ${book.bookPubYear} + '\', \''
-        + ${book.Des} + '\', \''
-        + ${book.Genre} + '\', \''
+        + ${#strings.length(book.des) > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''} + '\', \''
+        + ${book.discount} + '\', \''
         + ${book.ISBN} + '\', \''
         + ${book.img} + '\')'">북마크</button>
         <hr>
@@ -80,7 +80,6 @@
     <span th:each="i : ${#numbers.sequence(1, (totalResults / 10+1))}">
         <a th:href="@{/books(
             searchText=${searchText},
-            searchType=${searchType},
             page=${i},
             Start=${(i - 1) * 10 + 1},
         )}" th:text="${i}"></a>

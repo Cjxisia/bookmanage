@@ -72,7 +72,8 @@ public class LibraryAPIService {
                         bookDto.setBookPubYear(bookNode.path("pubdate").asText());
                         bookDto.setISBN(bookNode.path("isbn").asText());
                         bookDto.setImg(bookNode.path("image").asText());
-                        bookDto.setGenre(bookNode.path("category").asText());
+                        bookDto.setDiscount(bookNode.path("discount").asText());
+                        System.out.println(bookNode.toString());
                         bookDto.setDes(bookNode.path("description").asText());
 
                         bookLists.add(bookDto);
@@ -107,7 +108,7 @@ public class LibraryAPIService {
                     bookDto.setBookPubYear(bookNode.path("publication_year").asText());
                     bookDto.setISBN(bookNode.path("isbn13").asText());
                     bookDto.setImg(bookNode.path("bookImageURL").asText());
-                    bookDto.setGenre(bookNode.path("class_nm").asText());
+                    bookDto.setDiscount(bookNode.path("class_nm").asText());
                     bookDto.setDes(bookNode.path("description").asText());
 
                     bookLists.add(bookDto);

@@ -11,7 +11,7 @@ public class BookDto {
     private String bookAuth;
     private String bookPub;
     private String bookPubYear;
-    private String genre;
+    private String discount;
     private String ISBN;
     private String img;
     private String des;
