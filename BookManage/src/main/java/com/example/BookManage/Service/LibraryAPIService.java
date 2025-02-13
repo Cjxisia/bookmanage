@@ -6,8 +6,7 @@ import com.example.BookManage.Dto.BookResponseDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,26 +27,41 @@ public class LibraryAPIService {
         this.objectMapper = objectMapper;
     }
 
-    public BookResponseDto getBookInfo(String searchtext, String searchtype) {
-        String apiKey = apiKeyProperties.getKeys().get("aladin");
-        String url = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + apiKey + "&Query=" + searchtext + "&QueryType=" + searchtype +"&MaxResults=10&Start=1&SearchTarget=Book&output=JS";
+    private HttpHeaders createHeaders() {
+        HttpHeaders headers = new HttpHeaders();
 
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        String apiKey = apiKeyProperties.getKeys().get("naver"); // 네이버 API 키로 변경
+        String apiSecret = apiKeyProperties.getKeys().get("naversecret");
+
+        headers.set("X-Naver-Client-Id", apiKey); // 네이버 클라이언트 ID
+        headers.set("X-Naver-Client-Secret", apiSecret); // 네이버 클라이언트 비밀
+        return headers;
+    }
+
+    public BookResponseDto getBookInfo(String searchtext, int Start) {
+        String url = "https://openapi.naver.com/v1/search/book.json?query=" + searchtext + "&display=10&start=" + Start;
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                new HttpEntity<>(createHeaders()),
+                String.class
+        );
+
         List<BookDto> bookLists = new ArrayList<>();
 
         if (response.getStatusCode() == HttpStatus.OK) {
             try {
                 String jsonResponse = response.getBody();
 
-                jsonResponse = jsonResponse.replace("\\'", "'");
-
+                // JSON 파싱
                 JsonNode root = objectMapper.readTree(jsonResponse);
-                JsonNode totalResultsNode = root.path("totalResults");
+                JsonNode totalResultsNode = root.path("total");
                 int totalResults = totalResultsNode.asInt();
 
                 System.out.println("Total Results: " + totalResults);
 
-                JsonNode itemNode = root.path("item");
+                JsonNode itemNode = root.path("items");
 
                 if (itemNode.isArray()) {
                     for (JsonNode bookNode : itemNode) {
@@ -55,10 +69,10 @@ public class LibraryAPIService {
                         bookDto.setBookTitle(bookNode.path("title").asText());
                         bookDto.setBookAuth(bookNode.path("author").asText());
                         bookDto.setBookPub(bookNode.path("publisher").asText());
-                        bookDto.setBookPubYear(bookNode.path("pubDate").asText());
+                        bookDto.setBookPubYear(bookNode.path("pubdate").asText());
                         bookDto.setISBN(bookNode.path("isbn").asText());
-                        bookDto.setImg(bookNode.path("cover").asText());
-                        bookDto.setGenre(bookNode.path("categoryName").asText());
+                        bookDto.setImg(bookNode.path("image").asText());
+                        bookDto.setGenre(bookNode.path("category").asText());
                         bookDto.setDes(bookNode.path("description").asText());
 
                         bookLists.add(bookDto);

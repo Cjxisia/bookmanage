@@ -28,19 +28,19 @@ public class LibraryAPIController {
 
     @GetMapping("/books")
     public String getBooks(
-            @RequestParam(name = "searchType", defaultValue = "title") String searchType,
             @RequestParam(name = "searchText") String searchText,
+            @RequestParam(name = "Start", defaultValue = "1") int Start,
             Model model,
             HttpSession session) {
 
-        session.setAttribute("searchType", searchType);
         session.setAttribute("searchText", searchText);
 
-        System.out.println("검색타입"+searchType);
-        System.out.println("검색어"+ searchText);
+        System.out.println("검색어" + searchText);
+        System.out.println("시작값" + Start);
 
-        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, searchType);
+        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, Start);
         model.addAttribute("books", bookResponse.getBookLists());
+        model.addAttribute("searchText", searchText);
         model.addAttribute("totalResults", bookResponse.getTotalResults());
 
         return "books_page";

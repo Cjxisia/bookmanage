@@ -14,15 +14,6 @@
 <h1>도서 검색</h1>
 
 <form th:action="@{/books}" method="get">
-    <label for="searchType">검색 기준:</label>
-    <select id="searchType" name="searchType">
-        <option value="Title">제목</option>
-        <option value="Author">저자</option>
-        <option value="Publisher">출판사</option>
-        <option value="Description">책 설명</option>
-        <option value="Keyword">키워드</option>
-    </select>
-
     <label for="searchText">검색어:</label>
     <input type="text" id="searchText" name="searchText" required>
     <button type="submit">검색</button>

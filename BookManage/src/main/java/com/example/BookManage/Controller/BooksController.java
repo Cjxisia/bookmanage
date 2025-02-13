@@ -27,13 +27,12 @@ public class BooksController {
     public String addBookmark(@ModelAttribute BookDto bookDto, HttpSession session, Model model) {
 
         String username = (String) session.getAttribute("nickname");
-        String searchType= (String) session.getAttribute("searchType");
         String searchText = (String) session.getAttribute("searchText");
 
         bookDto.setUsername(username);
 
         bookService.savebooks(bookDto);
 
-        return "redirect:/books?searchType="+ URLEncoder.encode(searchType, StandardCharsets.UTF_8) + "&searchText=" + URLEncoder.encode(searchText, StandardCharsets.UTF_8);
+        return "redirect:/books?&searchText=" + URLEncoder.encode(searchText, StandardCharsets.UTF_8);
     }
 }
