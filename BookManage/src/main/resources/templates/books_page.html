@@ -70,7 +70,7 @@
                 th:data-auth="${book.bookAuth}"
                 th:data-pub="${book.bookPub}"
                 th:data-pubyear="${book.bookPubYear}"
-                th:data-des="${book.des != null and book.des.length() > 0 ? #strings.substring(book.des, 0, (book.des.length() > 100 ? 100 : book.des.length())) + (book.des.length() > 100 ? '...' : '') : ''}"
+                th:data-des="${book.des != null and book.des.length() > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''}"
                 th:data-discount="${book.discount}"
                 th:data-isbn="${book.ISBN}"
                 th:data-img="${book.img}"
