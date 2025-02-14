@@ -7,24 +7,34 @@
     <script>
         var loggedInUser = "[[${session.nickname}]]";
 
-        function bookmarkBook(bookTitle, bookAuth, bookPub, bookPubYear, des, discount, ISBN, img) {
+        function bookmarkBook(button) {
             if (!loggedInUser || loggedInUser === "null") {
                 alert("로그인이 필요합니다.");
                 return;
             }
+            const bookTitle = button.getAttribute("data-title");
+            const bookAuth = button.getAttribute("data-auth");
+            const bookPub = button.getAttribute("data-pub");
+            const bookPubYear = button.getAttribute("data-pubyear");
+            const des = button.getAttribute("data-des");
+            const discount = button.getAttribute("data-discount");
+            const ISBN = button.getAttribute("data-isbn");
+            const img = button.getAttribute("data-img");
 
             $.ajax({
                 type: "POST",
                 url: "/bookmark",
                 contentType: "application/x-www-form-urlencoded",
-                data: ({ bookTitle: bookTitle,
-                         bookAuth: bookAuth,
-                         bookPub: bookPub,
-                         bookPubYear: bookPubYear,
-                         des: des,
-                         discount: discount,
-                         ISBN: ISBN,
-                         img: img }),
+                data: {
+                    bookTitle: bookTitle,
+                    bookAuth: bookAuth,
+                    bookPub: bookPub,
+                    bookPubYear: bookPubYear,
+                    des: des,
+                    discount: discount,
+                    ISBN: ISBN,
+                    img: img
+                },
                 success: function(response) {
                     alert("북마크에 추가되었습니다!");
                 },
@@ -40,38 +50,31 @@
 <h2>총 검색 결과: <span th:text="${totalResults}"></span>권</h2>
 <ul>
     <li th:each="book : ${books}">
-        <!-- 도서 제목 출력 -->
         <span th:text="${book.bookTitle}">책 제목</span> <br>
 
-        <!-- 저자 출력 -->
         <span th:text="${book.bookAuth}">저자</span> <br>
 
-        <!-- 출판사 출력 -->
         <span th:text="${book.bookPub}">출판사</span> <br>
 
-        <!-- 출판연도 출력 -->
         <span th:text="${book.bookPubYear}">출판 연도</span> <br>
 
         <span th:text="${#strings.length(book.des) > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
 
         <span th:text="${book.discount}">가격</span> <br>
 
-        <!-- ISBN 출력 -->
         <span th:text="${book.ISBN}">ISBN</span> <br>
 
-        <!-- 책 이미지 출력 -->
         <img th:src="${book.img}" alt="Book Image" width="100" height="150"><br>
 
-        <!-- 북마크 버튼, bookTitle을 함수에 전달 -->
-        <button th:attr="onclick='bookmarkBook(\''
-        + ${book.bookTitle} + '\', \''
-        + ${book.bookAuth} + '\', \''
-        + ${book.bookPub} + '\', \''
-        + ${book.bookPubYear} + '\', \''
-        + ${#strings.length(book.des) > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''} + '\', \''
-        + ${book.discount} + '\', \''
-        + ${book.ISBN} + '\', \''
-        + ${book.img} + '\')'">북마크</button>
+        <button th:data-title="${book.bookTitle}"
+                th:data-auth="${book.bookAuth}"
+                th:data-pub="${book.bookPub}"
+                th:data-pubyear="${book.bookPubYear}"
+                th:data-des="${book.des != null and book.des.length() > 0 ? #strings.substring(book.des, 0, (book.des.length() > 100 ? 100 : book.des.length())) + (book.des.length() > 100 ? '...' : '') : ''}"
+                th:data-discount="${book.discount}"
+                th:data-isbn="${book.ISBN}"
+                th:data-img="${book.img}"
+                onclick="bookmarkBook(this)">북마크</button>
         <hr>
     </li>
 </ul>
@@ -85,8 +88,6 @@
         )}" th:text="${i}"></a>
     </span>
 </div>
-
-
 
 <div th:if="${books.size() == 0}">
     <p>검색 결과가 없습니다.</p>
