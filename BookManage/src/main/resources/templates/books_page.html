@@ -50,7 +50,9 @@
 <h2>총 검색 결과: <span th:text="${totalResults}"></span>권</h2>
 <ul>
     <li th:each="book : ${books}">
-        <span th:text="${book.bookTitle}">책 제목</span> <br>
+        <a th:href="@{/book/detail/{ISBN}(ISBN=${book.ISBN})}">
+            <span th:text="${book.bookTitle}">책 제목</span>
+        </a> <br>
 
         <span th:text="${book.bookAuth}">저자</span> <br>
 
@@ -64,7 +66,9 @@
 
         <span th:text="${book.ISBN}">ISBN</span> <br>
 
-        <img th:src="${book.img}" alt="Book Image" width="100" height="150"><br>
+        <a th:href="@{/book/detail/{ISBN}(ISBN=${book.ISBN})}">
+            <img th:src="${book.img}" alt="Book Image" width="100" height="150">
+        </a> <br>
 
         <button th:data-title="${book.bookTitle}"
                 th:data-auth="${book.bookAuth}"
