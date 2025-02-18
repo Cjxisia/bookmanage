@@ -11,13 +11,12 @@ public class BookDto {
     private String bookAuth;
     private String bookPub;
     private String bookPubYear;
+    private String link;
     private String discount;
     private String ISBN;
     private String img;
     private String des;
 
-    private int loanCount;  // 대출 횟수
     private List<String> recommendList;  // 추천 도서 목록
-    private List<String> keywordList;  // 키워드 목록
     private List<String> loanRecommendList;  // 함께 대출된 도서 목록
 }

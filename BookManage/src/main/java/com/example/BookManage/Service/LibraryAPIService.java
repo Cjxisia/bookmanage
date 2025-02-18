@@ -75,6 +75,7 @@ public class LibraryAPIService {
                         bookDto.setDiscount(bookNode.path("discount").asText());
                         System.out.println(bookNode.toString());
                         bookDto.setDes(bookNode.path("description").asText());
+                        bookDto.setLink(bookNode.path("link").asText());
 
                         bookLists.add(bookDto);
                     }
@@ -90,7 +91,7 @@ public class LibraryAPIService {
     }
 
 
-    public List<BookDto> getBookInfoByIsbn(String isbn) {
+    public List<BookDto> getBookInfoDetail(String isbn) {
         String apiKey = apiKeyProperties.getKeys().get("library");
         String url = "http://data4library.kr/api/usageAnalysisList?authKey=" + apiKey + "&isbn13=" + isbn + "&format=json";
 

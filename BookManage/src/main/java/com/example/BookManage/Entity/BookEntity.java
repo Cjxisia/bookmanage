@@ -27,6 +27,9 @@ public class BookEntity {
     @Column(name = "bookPubYear")
     private String bookPubYear;
 
+    @Column(name = "link")
+    private String link;
+
     @Column(name = "discount")
     private String discount;
 

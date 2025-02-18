@@ -20,6 +20,7 @@ public class BookService {
         bookEntity.setUsername(bookDto.getUsername());
         bookEntity.setBookPub(bookDto.getBookPub());
         bookEntity.setBookPubYear(bookDto.getBookPubYear());
+        bookEntity.setLink(bookDto.getLink());
         bookEntity.setDiscount(bookDto.getDiscount());
         bookEntity.setDes(bookDto.getDes());
         bookEntity.setBookAuth(bookDto.getBookAuth());

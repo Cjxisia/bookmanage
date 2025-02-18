@@ -62,11 +62,13 @@
 
         <span th:text="${#strings.length(book.des) > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
 
+        <a th:href="${book.link}" target="_blank" th:text="${book.link}"></a> <br>
+
         <span th:text="${book.discount}">가격</span> <br>
 
         <span th:text="${book.ISBN}">ISBN</span> <br>
 
-        <a th:href="@{/book/detail/{ISBN}(ISBN=${book.ISBN})}">
+        <a th:href="@{/books/detail/{ISBN}(ISBN=${book.ISBN})}">
             <img th:src="${book.img}" alt="Book Image" width="100" height="150">
         </a> <br>
 
@@ -75,6 +77,7 @@
                 th:data-pub="${book.bookPub}"
                 th:data-pubyear="${book.bookPubYear}"
                 th:data-des="${book.des != null and book.des.length() > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''}"
+                th:data-link="${book.link}"
                 th:data-discount="${book.discount}"
                 th:data-isbn="${book.ISBN}"
                 th:data-img="${book.img}"
