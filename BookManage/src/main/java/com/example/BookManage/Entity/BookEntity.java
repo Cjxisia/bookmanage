@@ -2,7 +2,6 @@ package com.example.BookManage.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Entity
 @Table(name = "book")
@@ -42,4 +41,6 @@ public class BookEntity {
     @Column(name = "img")
     private String img;
 
+    @Column(name = "category")
+    private String category;
 }

@@ -54,12 +54,9 @@ public class LibraryAPIService {
             try {
                 String jsonResponse = response.getBody();
 
-                // JSON 파싱
                 JsonNode root = objectMapper.readTree(jsonResponse);
                 JsonNode totalResultsNode = root.path("total");
                 int totalResults = totalResultsNode.asInt();
-
-                System.out.println("Total Results: " + totalResults);
 
                 JsonNode itemNode = root.path("items");
 
@@ -73,9 +70,9 @@ public class LibraryAPIService {
                         bookDto.setISBN(bookNode.path("isbn").asText());
                         bookDto.setImg(bookNode.path("image").asText());
                         bookDto.setDiscount(bookNode.path("discount").asText());
-                        System.out.println(bookNode.toString());
                         bookDto.setDes(bookNode.path("description").asText());
                         bookDto.setLink(bookNode.path("link").asText());
+                        System.out.println(bookNode.toString());
 
                         bookLists.add(bookDto);
                     }
@@ -95,6 +92,8 @@ public class LibraryAPIService {
         String apiKey = apiKeyProperties.getKeys().get("library");
         String url = "http://data4library.kr/api/usageAnalysisList?authKey=" + apiKey + "&isbn13=" + isbn + "&format=json";
 
+        BookResponseDto bookResponseDto = getBookInfo(isbn, 1);
+
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         List<BookDto> bookLists = new ArrayList<>();
         if (response.getStatusCode() == HttpStatus.OK) {
@@ -105,14 +104,7 @@ public class LibraryAPIService {
                 if (!bookNode.isMissingNode()) {
                     BookDto bookDto = new BookDto();
                     bookDto.setBookTitle(bookNode.path("bookname").asText());
-                    bookDto.setBookAuth(bookNode.path("authors").asText());
-                    bookDto.setBookPub(bookNode.path("publisher").asText());
-                    bookDto.setBookPubYear(bookNode.path("publication_year").asText());
-                    bookDto.setISBN(bookNode.path("isbn13").asText());
-                    bookDto.setImg(bookNode.path("bookImageURL").asText());
-                    bookDto.setDiscount(bookNode.path("class_nm").asText());
-                    bookDto.setDes(bookNode.path("description").asText());
-
+                    System.out.println(bookNode.toString());
                     bookLists.add(bookDto);
                 } else {
                     System.out.println("No book information found for the given ISBN.");
@@ -122,33 +114,5 @@ public class LibraryAPIService {
             }
         }
         return bookLists;
-    }
-
-    public List<BookDto> getBookInfoByKeyword(String keyword) {
-        String apiKey = apiKeyProperties.getKeys().get("library");
-        String url = "https://www.data4library.kr/api/srchBooks?authKey=" + apiKey + "&keyword=" + keyword + "&format=json";
-
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                JsonNode root = objectMapper.readTree(response.getBody());
-                JsonNode docs = root.path("response").path("docs");
-
-                List<BookDto> bookList = new ArrayList<>();
-                if (docs.isArray()) {
-                    for (JsonNode doc : docs) {
-                        JsonNode book = doc.path("doc");
-                        String isbn = book.path("isbn13").asText();
-                    }
-                }
-                System.out.println("bookList:" + bookList);
-                return bookList;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Collections.emptyList();
-            }
-        }else {
-            return Collections.emptyList();
-        }
     }
 }
