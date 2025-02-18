@@ -92,9 +92,9 @@ public class LibraryAPIService {
         String url = "http://data4library.kr/api/usageAnalysisList?authKey=" + apiKey + "&isbn13=" + isbn + "&format=json";
 
         BookResponseDto bookResponseDto = getBookInfo(isbn, 1);
+        List<BookDto> bookLists = bookResponseDto.getBookLists();
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        List<BookDto> bookLists = new ArrayList<>();
         if (response.getStatusCode() == HttpStatus.OK) {
             try {
                 JsonNode root = objectMapper.readTree(response.getBody());
