@@ -16,6 +16,7 @@ import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,7 +113,17 @@ public class LibraryAPIService {
                 .map(token -> token.text()) // 텍스트 추출
                 .collect(Collectors.toList());
 
-        System.out.println(nouns);
+        Map<String, Long> frequencyMap = nouns.stream()
+                .collect(Collectors.groupingBy(noun -> noun, Collectors.counting()));
+
+        // 빈도수 기준으로 내림차순 정렬 후 상위 2개 키워드 선택
+        List<String> topKeywords = frequencyMap.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .limit(2)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        System.out.println(topKeywords);
 
 
         return bookLists;
