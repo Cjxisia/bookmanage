@@ -52,7 +52,7 @@
 <h2>총 검색 결과: <span th:text="${totalResults}"></span>권</h2>
 <ul>
     <li th:each="book : ${books}">
-        <a th:href="@{/book/detail/{ISBN}(ISBN=${book.ISBN})}">
+        <a th:href="@{/books/detail/{ISBN}(ISBN=${book.ISBN})}">
             <span th:text="${book.bookTitle}">책 제목</span>
         </a> <br>
 

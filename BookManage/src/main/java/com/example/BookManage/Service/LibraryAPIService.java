@@ -5,13 +5,18 @@ import com.example.BookManage.Dto.BookDto;
 import com.example.BookManage.Dto.BookResponseDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.openkoreantext.processor.OpenKoreanTextProcessor;
+import org.openkoreantext.processor.tokenizer.KoreanTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import scala.collection.JavaConverters;
+import scala.collection.Seq;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LibraryAPIService {
@@ -90,28 +95,26 @@ public class LibraryAPIService {
     public List<BookDto> getBookInfoDetail(String isbn) {
         String apiKey = apiKeyProperties.getKeys().get("library");
         String url = "http://data4library.kr/api/usageAnalysisList?authKey=" + apiKey + "&isbn13=" + isbn + "&format=json";
+        String description = "";
 
-        BookResponseDto bookResponseDto = getBookInfo(isbn, 1);
-        List<BookDto> bookLists = bookResponseDto.getBookLists();
-
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                JsonNode root = objectMapper.readTree(response.getBody());
-                JsonNode bookNode = root.path("response").path("book");
-
-                if (!bookNode.isMissingNode()) {
-                    BookDto bookDto = new BookDto();
-                    bookDto.setBookTitle(bookNode.path("bookname").asText());
-                    System.out.println(bookNode.toString());
-                    bookLists.add(bookDto);
-                } else {
-                    System.out.println("No book information found for the given ISBN.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        List<BookDto> bookLists = getBookInfo(isbn, 1).getBookLists();
+        if (!bookLists.isEmpty()) {
+            description = bookLists.get(0).getDes();
         }
+
+        CharSequence normalized = OpenKoreanTextProcessor.normalize(description);
+        Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessor.tokenize(normalized);
+
+        List<KoreanTokenizer.KoreanToken> tokenList = JavaConverters.seqAsJavaList(tokens);
+
+        List<String> nouns = tokenList.stream()
+                .filter(token -> token.pos().toString().equals("Noun")) // 명사만 선택
+                .map(token -> token.text()) // 텍스트 추출
+                .collect(Collectors.toList());
+
+        System.out.println(nouns);
+
+
         return bookLists;
     }
 }
