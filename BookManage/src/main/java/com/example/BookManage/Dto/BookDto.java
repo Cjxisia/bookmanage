@@ -16,7 +16,4 @@ public class BookDto {
     private String ISBN;
     private String img;
     private String des;
-
-    private List<String> recommendList;  // 추천 도서 목록
-    private List<String> loanRecommendList;  // 함께 대출된 도서 목록
 }

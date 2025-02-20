@@ -1,6 +1,7 @@
 package com.example.BookManage.Controller;
 
 import com.example.BookManage.Dto.BookDto;
+import com.example.BookManage.Dto.MixBookDto;
 import com.example.BookManage.Service.BookService;
 import com.example.BookManage.Service.LibraryAPIService;
 import jakarta.servlet.http.HttpSession;
@@ -38,10 +39,13 @@ public class BooksController {
         return "redirect:/books?&searchText=" + URLEncoder.encode(searchText, StandardCharsets.UTF_8);
     }
 
-    @GetMapping("/books/detail/{ISBN}")
-    public String getBookDetail(@PathVariable("ISBN") String isbn, Model model){
-        List<BookDto> bookList = libraryAPIService.getBookInfoDetail(isbn);
-        model.addAttribute("books", bookList);
+    @GetMapping("/books/detail/{title}")
+    public String getBookDetail(@PathVariable("title") String title, Model model){
+        MixBookDto mixBook = libraryAPIService.getBookInfoDetail(title);
+
+        model.addAttribute("books", mixBook.getBookLists());
+        model.addAttribute("google_books", mixBook.getGoogle_bookLists());
+
         return "book_detail_page";
     }
 }

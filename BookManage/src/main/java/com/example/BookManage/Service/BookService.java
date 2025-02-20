@@ -37,10 +37,10 @@ public class BookService {
 
             return jsonResponse.getJSONArray("item")
                     .getJSONObject(0)
-                    .getString("categoryName");
+                    .getString("categoryId");
         } catch (Exception e) {
             e.printStackTrace();
-            return "Unknown Category";  // 오류 발생 시 기본값 반환
+            return "Unknown Category";
         }
     }
 
