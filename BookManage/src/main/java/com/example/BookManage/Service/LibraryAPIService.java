@@ -14,9 +14,11 @@ import org.springframework.web.client.RestTemplate;
 import scala.collection.JavaConverters;
 import scala.collection.Seq;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +26,7 @@ public class LibraryAPIService {
     private final RestTemplate restTemplate;
     private final ApiKeyProperties apiKeyProperties;
     private final ObjectMapper objectMapper;
+    private Set<String> stopwords = new HashSet<>();
 
     @Autowired
     public LibraryAPIService(RestTemplate restTemplate, ApiKeyProperties apiKeyProperties, ObjectMapper objectMapper) {
@@ -41,6 +44,46 @@ public class LibraryAPIService {
         headers.set("X-Naver-Client-Id", apiKey); // 네이버 클라이언트 ID
         headers.set("X-Naver-Client-Secret", apiSecret); // 네이버 클라이언트 비밀
         return headers;
+    }
+
+    public void loadStopwords() {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(getClass().getClassLoader().getResource("stopword.txt").toURI()));
+            System.out.println("line:"+lines);
+            stopwords = lines.stream()
+                    .map(String::trim)
+                    .collect(Collectors.toSet());
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> extraction_keyword(String text){
+        CharSequence normalized = OpenKoreanTextProcessor.normalize(text);
+        Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessor.tokenize(normalized);
+
+        List<KoreanTokenizer.KoreanToken> tokenList = JavaConverters.seqAsJavaList(tokens);
+
+        List<String> nouns = tokenList.stream()
+                .filter(token -> token.pos().toString().equals("Noun") && !token.pos().toString().equals("NNP")) // 명사만 선택
+                .map(token -> token.text()) // 텍스트 추출
+                .filter(noun -> !stopwords.contains(noun))
+                .collect(Collectors.toList());
+
+        System.out.println(nouns);
+
+        Map<String, Long> frequencyMap = nouns.stream()
+                .collect(Collectors.groupingBy(noun -> noun, Collectors.counting()));
+
+        List<String> topKeywords = frequencyMap.entrySet().stream()
+                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .limit(5)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        System.out.println(topKeywords);
+
+        return topKeywords;
     }
 
     public BookResponseDto getBookInfo(String searchtext, int Start) {
@@ -94,37 +137,24 @@ public class LibraryAPIService {
 
 
     public List<BookDto> getBookInfoDetail(String isbn) {
-        String apiKey = apiKeyProperties.getKeys().get("library");
-        String url = "http://data4library.kr/api/usageAnalysisList?authKey=" + apiKey + "&isbn13=" + isbn + "&format=json";
+        String apikey = apiKeyProperties.getKeys().get("aladin");
+        String url = "https://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?"
+                + "ttbkey="
+                + apikey
+                + "&itemIdType=ISBN"
+                + "&ItemId=" + isbn
+                + "&output=js"
+                + "&Version=20131101";
         String description = "";
+
+        loadStopwords();
 
         List<BookDto> bookLists = getBookInfo(isbn, 1).getBookLists();
         if (!bookLists.isEmpty()) {
             description = bookLists.get(0).getDes();
         }
 
-        CharSequence normalized = OpenKoreanTextProcessor.normalize(description);
-        Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessor.tokenize(normalized);
-
-        List<KoreanTokenizer.KoreanToken> tokenList = JavaConverters.seqAsJavaList(tokens);
-
-        List<String> nouns = tokenList.stream()
-                .filter(token -> token.pos().toString().equals("Noun")) // 명사만 선택
-                .map(token -> token.text()) // 텍스트 추출
-                .collect(Collectors.toList());
-
-        Map<String, Long> frequencyMap = nouns.stream()
-                .collect(Collectors.groupingBy(noun -> noun, Collectors.counting()));
-
-        // 빈도수 기준으로 내림차순 정렬 후 상위 2개 키워드 선택
-        List<String> topKeywords = frequencyMap.entrySet().stream()
-                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
-                .limit(2)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
-        System.out.println(topKeywords);
-
+        List<String>keyword = extraction_keyword(description);
 
         return bookLists;
     }
