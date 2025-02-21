@@ -53,7 +53,6 @@ public class LibraryAPIService {
     public void loadStopwords() {
         try {
             List<String> lines = Files.readAllLines(Paths.get(getClass().getClassLoader().getResource("stopword.txt").toURI()));
-            System.out.println("line:"+lines);
             stopwords = lines.stream()
                     .map(String::trim)
                     .collect(Collectors.toSet());
@@ -76,7 +75,8 @@ public class LibraryAPIService {
                 .filter(noun -> !stopwords.contains(noun))
                 .collect(Collectors.toList());
 
-        System.out.println(nouns);
+        System.out.println("text:" + text);
+        System.out.println("nonus:" + nouns);
 
         Map<String, Long> frequencyMap = nouns.stream()
                 .collect(Collectors.groupingBy(noun -> noun, Collectors.counting()));
@@ -169,6 +169,8 @@ public class LibraryAPIService {
     public List<BookDto> getAladinBook(String url){
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(url, String.class);
+        response = response.replace("\\'", "'");
+
 
         List<BookDto> bookLists = new ArrayList<>();
 
@@ -176,9 +178,9 @@ public class LibraryAPIService {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(response);
 
-            System.out.println(rootNode);
+            System.out.println("aladin:"+rootNode);
 
-            JsonNode itemsNode = rootNode.path("item");  // "item" 노드를 가져옴
+            JsonNode itemsNode = rootNode.path("item");
             for (JsonNode bookNode : itemsNode) {
                 BookDto bookDto = new BookDto();
                 bookDto.setBookTitle(bookNode.path("title").asText());
@@ -253,21 +255,19 @@ public class LibraryAPIService {
     public MixBookDto getBookInfoDetail(String title) {
         String regex = "\\s*\\(.*";
         title = title.replaceAll(regex, "");
-        System.out.println("title:" + title);
-        String naver_title = "";
+        String processtitle = title.replaceAll("\\s", "");
+        System.out.println("title:" + processtitle);
         String description = "";
         String google_des = "";
         List<BookDto> google_bookLists = new ArrayList<>();
 
-        List<BookDto> bookLists = getBookInfo(title, 1).getBookLists();
+        List<BookDto> bookLists = getBookInfo(processtitle, 1).getBookLists();
         if (!bookLists.isEmpty()) {
             description = bookLists.get(0).getDes();
-            naver_title = bookLists.get(0).getBookTitle().replace(" ", "");
-            System.out.println(naver_title);
         }
 
-        String apikey = apiKeyProperties.getKeys().get("google");
-        String googleBooksUrl = "https://www.googleapis.com/books/v1/volumes?q=" + naver_title + "&key=" + apikey;
+        String googleapikey = apiKeyProperties.getKeys().get("google");
+        String googleBooksUrl = "https://www.googleapis.com/books/v1/volumes?q=" + processtitle + "&key=" + googleapikey;
 
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -279,12 +279,23 @@ public class LibraryAPIService {
             if (items != null && items.length() > 0) {
                 JSONObject volumeInfo = items.getJSONObject(0).getJSONObject("volumeInfo");
                 google_des = volumeInfo.optString("description");
+                System.out.println("google_des:"+google_des);
+                System.out.println("items:" + items);
                 description = description + google_des;
             } else {
-                System.out.println("No book found in Google Books: " + naver_title);
+                System.out.println("No book found in Google Books: " + processtitle);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        String aladinapikey = apiKeyProperties.getKeys().get("aladin");
+        String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + processtitle + "&QueryType=keyword&MaxResults=1&Start=1&output=js";
+        List<BookDto> aladinLists = getAladinBook(aladinurl);
+        if (!bookLists.isEmpty()) {
+            description = description + aladinLists.get(0).getDes();
+            description = description + title;
+            System.out.println(description);
         }
 
         List<String>keyword = extraction_keyword(description);
