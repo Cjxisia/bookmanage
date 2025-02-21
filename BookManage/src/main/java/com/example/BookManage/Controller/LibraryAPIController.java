@@ -2,6 +2,7 @@ package com.example.BookManage.Controller;
 
 import com.example.BookManage.Dto.BookDto;
 import com.example.BookManage.Dto.BookResponseDto;
+import com.example.BookManage.Dto.MainBookDto;
 import com.example.BookManage.Service.LibraryAPIService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,12 @@ public class LibraryAPIController {
     }
 
     @GetMapping("/")
-    public String viewload(){
+    public String viewload(Model model){
+
+        MainBookDto mainBookDto = libraryapiService.getBookMain();
+        model.addAttribute("newbook", mainBookDto.getNewbook());
+        model.addAttribute("bestbook", mainBookDto.getBestbook());
+
         return "Main_page";
     }
 

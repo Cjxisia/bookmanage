@@ -3,6 +3,7 @@ package com.example.BookManage.Service;
 import com.example.BookManage.Config.ApiKeyProperties;
 import com.example.BookManage.Dto.BookDto;
 import com.example.BookManage.Dto.BookResponseDto;
+import com.example.BookManage.Dto.MainBookDto;
 import com.example.BookManage.Dto.MixBookDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -165,6 +166,40 @@ public class LibraryAPIService {
         return google_bookLists;
     }
 
+    public List<BookDto> getAladinBook(String url){
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(url, String.class);
+
+        List<BookDto> bookLists = new ArrayList<>();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(response);
+
+            System.out.println(rootNode);
+
+            JsonNode itemsNode = rootNode.path("item");  // "item" 노드를 가져옴
+            for (JsonNode bookNode : itemsNode) {
+                BookDto bookDto = new BookDto();
+                bookDto.setBookTitle(bookNode.path("title").asText());
+                bookDto.setBookAuth(bookNode.path("author").asText());
+                bookDto.setBookPub(bookNode.path("publisher").asText());
+                bookDto.setBookPubYear(bookNode.path("pubdate").asText());
+                bookDto.setISBN(bookNode.path("isbn").asText());
+                bookDto.setImg(bookNode.path("image").asText());
+                bookDto.setDiscount(bookNode.path("discount").asText());
+                bookDto.setDes(bookNode.path("description").asText());
+                bookDto.setLink(bookNode.path("link").asText());
+
+                bookLists.add(bookDto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bookLists;
+    }
+
     public BookResponseDto getBookInfo(String searchtext, int Start) {
         String url = "https://openapi.naver.com/v1/search/book.json?query=" + searchtext + "&display=10&start=" + Start;
 
@@ -254,5 +289,22 @@ public class LibraryAPIService {
         google_bookLists = getGoogleBook(keywordQuery);
 
         return new MixBookDto(bookLists, google_bookLists);
+    }
+
+    public MainBookDto getBookMain() {
+        String apikey = apiKeyProperties.getKeys().get("aladin");
+        String newBookurl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
+                apikey +
+                "&QueryType=ItemNewSpecial&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101";
+        String bestBookurl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
+                apikey +
+                "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101";
+
+        System.out.println(newBookurl);
+
+        List<BookDto>newBook = getAladinBook(newBookurl);
+        List<BookDto>bestBook = getAladinBook(bestBookurl);
+
+        return new MainBookDto(newBook, bestBook);
     }
 }
