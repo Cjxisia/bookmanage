@@ -71,7 +71,7 @@ public class LibraryAPIService {
         List<KoreanTokenizer.KoreanToken> tokenList = JavaConverters.seqAsJavaList(tokens);
 
         List<String> nouns = tokenList.stream()
-                .filter(token -> token.pos().toString().equals("Noun") && !token.pos().toString().equals("NNP")) // 명사만 선택
+                .filter(token -> token.pos().toString().equals("Noun") && !token.pos().toString().equals("NNP"))
                 .map(token -> token.text()) // 텍스트 추출
                 .filter(noun -> !stopwords.contains(noun))
                 .collect(Collectors.toList());
@@ -186,7 +186,7 @@ public class LibraryAPIService {
                 bookDto.setBookPub(bookNode.path("publisher").asText());
                 bookDto.setBookPubYear(bookNode.path("pubdate").asText());
                 bookDto.setISBN(bookNode.path("isbn").asText());
-                bookDto.setImg(bookNode.path("image").asText());
+                bookDto.setImg(bookNode.path("cover").asText());
                 bookDto.setDiscount(bookNode.path("discount").asText());
                 bookDto.setDes(bookNode.path("description").asText());
                 bookDto.setLink(bookNode.path("link").asText());
@@ -251,6 +251,9 @@ public class LibraryAPIService {
 
 
     public MixBookDto getBookInfoDetail(String title) {
+        String regex = "\\s*\\(.*";
+        title = title.replaceAll(regex, "");
+        System.out.println("title:" + title);
         String naver_title = "";
         String description = "";
         String google_des = "";
@@ -275,7 +278,7 @@ public class LibraryAPIService {
 
             if (items != null && items.length() > 0) {
                 JSONObject volumeInfo = items.getJSONObject(0).getJSONObject("volumeInfo");
-                google_des = volumeInfo.optString("description", "No description available");
+                google_des = volumeInfo.optString("description");
                 description = description + google_des;
             } else {
                 System.out.println("No book found in Google Books: " + naver_title);

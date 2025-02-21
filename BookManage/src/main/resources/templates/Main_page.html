@@ -30,5 +30,84 @@
     <a th:href="@{/logout}">로그아웃</a>
 </div>
 
+<h3>새로운 책들</h3>
+<ul>
+    <li th:each="newbook : ${newbook}">
+        <a th:href="@{/books/detail/{title}(title=${newbook.bookTitle})}">
+            <span th:text="${newbook.bookTitle}">책 제목</span>
+        </a> <br>
+
+        <span th:text="${newbook.bookAuth}">저자</span> <br>
+
+        <span th:text="${newbook.bookPub}">출판사</span> <br>
+
+        <span th:text="${newbook.bookPubYear}">출판 연도</span> <br>
+
+        <span th:text="${#strings.length(newbook.des) > 0 ? #strings.substring(newbook.des, 0, (newbook.des.length() > 400 ? 400 : newbook.des.length())) + (newbook.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
+
+        <a th:href="${newbook.link}" target="_blank" th:text="${newbook.link}"></a> <br>
+
+        <span th:text="${newbook.discount}">가격</span> <br>
+
+        <span th:text="${newbook.ISBN}">ISBN</span> <br>
+
+        <a th:href="@{/books/detail/{title}(title=${newbook.bookTitle})}">
+            <img th:src="${newbook.img}" alt="Book Image" width="100" height="150">
+        </a> <br>
+
+        <button th:data-title="${newbook.bookTitle}"
+                th:data-auth="${newbook.bookAuth}"
+                th:data-pub="${newbook.bookPub}"
+                th:data-pubyear="${newbook.bookPubYear}"
+                th:data-des="${newbook.des != null and newbook.des.length() > 0 ? #strings.substring(newbook.des, 0, (newbook.des.length() > 400 ? 400 : newbook.des.length())) + (newbook.des.length() > 400 ? '...' : '') : ''}"
+                th:data-link="${newbook.link}"
+                th:data-discount="${newbook.discount}"
+                th:data-isbn="${newbook.ISBN}"
+                th:data-img="${newbook.img}"
+                onclick="bookmarkBook(this)">북마크</button>
+        <hr>
+    </li>
+</ul>
+
+<!-- Best Books -->
+<h3>베스트 책들</h3>
+<ul>
+    <li th:each="bestbook : ${bestbook}">
+        <a th:href="@{/books/detail/{title}(title=${bestbook.bookTitle})}">
+            <span th:text="${bestbook.bookTitle}">책 제목</span>
+        </a> <br>
+
+        <span th:text="${bestbook.bookAuth}">저자</span> <br>
+
+        <span th:text="${bestbook.bookPub}">출판사</span> <br>
+
+        <span th:text="${bestbook.bookPubYear}">출판 연도</span> <br>
+
+        <span th:text="${#strings.length(bestbook.des) > 0 ? #strings.substring(bestbook.des, 0, (bestbook.des.length() > 400 ? 400 : bestbook.des.length())) + (bestbook.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
+
+        <a th:href="${bestbook.link}" target="_blank" th:text="${bestbook.link}"></a> <br>
+
+        <span th:text="${bestbook.discount}">가격</span> <br>
+
+        <span th:text="${bestbook.ISBN}">ISBN</span> <br>
+
+        <a th:href="@{/books/detail/{title}(title=${bestbook.bookTitle})}">
+            <img th:src="${bestbook.img}" alt="Book Image" width="100" height="150">
+        </a> <br>
+
+        <button th:data-title="${bestbook.bookTitle}"
+                th:data-auth="${bestbook.bookAuth}"
+                th:data-pub="${bestbook.bookPub}"
+                th:data-pubyear="${bestbook.bookPubYear}"
+                th:data-des="${bestbook.des != null and bestbook.des.length() > 0 ? #strings.substring(bestbook.des, 0, (bestbook.des.length() > 400 ? 400 : bestbook.des.length())) + (bestbook.des.length() > 400 ? '...' : '') : ''}"
+                th:data-link="${bestbook.link}"
+                th:data-discount="${bestbook.discount}"
+                th:data-isbn="${bestbook.ISBN}"
+                th:data-img="${bestbook.img}"
+                onclick="bookmarkBook(this)">북마크</button>
+        <hr>
+    </li>
+</ul>
+
 </body>
 </html>
