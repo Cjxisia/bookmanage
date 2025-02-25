@@ -1,10 +1,9 @@
 package com.example.BookManage.Service;
 
 import com.example.BookManage.Config.ApiKeyProperties;
-import com.example.BookManage.Dto.BookDto;
-import com.example.BookManage.Dto.BookResponseDto;
-import com.example.BookManage.Dto.MainBookDto;
-import com.example.BookManage.Dto.MixBookDto;
+import com.example.BookManage.Dto.*;
+import com.example.BookManage.Entity.BookEntity;
+import com.example.BookManage.Repository.BookRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
@@ -30,13 +29,15 @@ public class LibraryAPIService {
     private final RestTemplate restTemplate;
     private final ApiKeyProperties apiKeyProperties;
     private final ObjectMapper objectMapper;
+    private final BookRepository bookRepository;
     private Set<String> stopwords = new HashSet<>();
 
     @Autowired
-    public LibraryAPIService(RestTemplate restTemplate, ApiKeyProperties apiKeyProperties, ObjectMapper objectMapper) {
+    public LibraryAPIService(RestTemplate restTemplate, ApiKeyProperties apiKeyProperties, ObjectMapper objectMapper, BookRepository bookRepository) {
         this.restTemplate = restTemplate;
         this.apiKeyProperties = apiKeyProperties;
         this.objectMapper = objectMapper;
+        this.bookRepository = bookRepository;
     }
 
     private HttpHeaders createHeaders() {
@@ -192,6 +193,7 @@ public class LibraryAPIService {
                 bookDto.setDiscount(bookNode.path("discount").asText());
                 bookDto.setDes(bookNode.path("description").asText());
                 bookDto.setLink(bookNode.path("link").asText());
+                bookDto.setCategory(bookNode.path("categoryName").asText());
 
                 bookLists.add(bookDto);
             }
@@ -252,7 +254,7 @@ public class LibraryAPIService {
     }
 
 
-    public MixBookDto getBookInfoDetail(String title) {
+    public DetailBookDto getBookInfoDetail(String title) {
         String regex = "\\s*\\(.*";
         title = title.replaceAll(regex, "");
         String processtitle = title.replaceAll("\\s", "");
@@ -302,17 +304,17 @@ public class LibraryAPIService {
         String keywordQuery = String.join("+", keyword);
         google_bookLists = getGoogleBook(keywordQuery);
 
-        return new MixBookDto(bookLists, google_bookLists);
+        return new DetailBookDto(bookLists, google_bookLists);
     }
 
     public MainBookDto getBookMain() {
         String apikey = apiKeyProperties.getKeys().get("aladin");
         String newBookurl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
                 apikey +
-                "&QueryType=ItemNewSpecial&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101";
+                "&QueryType=ItemNewSpecial&MaxResults=30&start=1&SearchTarget=All&output=js&Version=20131101";
         String bestBookurl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
                 apikey +
-                "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101";
+                "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=All&output=js&Version=20131101";
 
         System.out.println(newBookurl);
 
@@ -320,5 +322,52 @@ public class LibraryAPIService {
         List<BookDto>bestBook = getAladinBook(bestBookurl);
 
         return new MainBookDto(newBook, bestBook);
+    }
+
+    public MypageDto getMyInfo(String username){
+        String description = "";
+        List<BookDto> mybookDto = new ArrayList<>();
+        List<BookEntity>mybookEntity = bookRepository.findByUsername(username);
+        Map<String, Integer> categoryCount = new HashMap<>();
+
+        for(BookEntity entity : mybookEntity){
+            BookDto bookDto = new BookDto();
+
+            bookDto.setBookTitle(entity.getBookTitle());
+            bookDto.setBookAuth(entity.getBookAuth());
+            bookDto.setBookPub(entity.getBookPub());
+            bookDto.setBookPubYear(entity.getBookPubYear());
+            bookDto.setISBN(entity.getISBN());
+            bookDto.setImg(entity.getImg());
+            bookDto.setDiscount(entity.getDiscount());
+            bookDto.setDes(entity.getDes());
+            bookDto.setLink(entity.getLink());
+
+            mybookDto.add(bookDto);
+
+            String category = entity.getCategory();
+            categoryCount.put(category, categoryCount.getOrDefault(category, 0) + 1);
+            description = description + entity.getDes();
+        }
+
+        String mostCommonCategory = categoryCount.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(Collections.max(categoryCount.values())))
+                .map(Map.Entry::getKey)
+                .sorted()
+                .findFirst()
+                .orElse(null);
+
+        String aladinapikey = apiKeyProperties.getKeys().get("aladin");
+        String aladinurl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey="
+                + aladinapikey
+                + "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=All&CategoryID="
+                + mostCommonCategory;
+
+        List<String>keyword = extraction_keyword(description);
+        String keywordQuery = String.join("+", keyword);
+        List<BookDto> google_bookLists = getGoogleBook(keywordQuery);
+        List<BookDto>aladinBook = getAladinBook(aladinurl);
+
+        return new MypageDto(mybookDto, google_bookLists, aladinBook);
     }
 }

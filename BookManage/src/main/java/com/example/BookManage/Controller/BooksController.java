@@ -1,7 +1,8 @@
 package com.example.BookManage.Controller;
 
 import com.example.BookManage.Dto.BookDto;
-import com.example.BookManage.Dto.MixBookDto;
+import com.example.BookManage.Dto.DetailBookDto;
+import com.example.BookManage.Dto.MypageDto;
 import com.example.BookManage.Service.BookService;
 import com.example.BookManage.Service.LibraryAPIService;
 import jakarta.servlet.http.HttpSession;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Controller
 public class BooksController {
@@ -41,11 +41,22 @@ public class BooksController {
 
     @GetMapping("/books/detail/{title}")
     public String getBookDetail(@PathVariable("title") String title, Model model){
-        MixBookDto mixBook = libraryAPIService.getBookInfoDetail(title);
+        DetailBookDto mixBook = libraryAPIService.getBookInfoDetail(title);
 
         model.addAttribute("books", mixBook.getBookLists());
         model.addAttribute("google_books", mixBook.getGoogle_bookLists());
 
         return "book_detail_page";
+    }
+
+    @GetMapping("/mypage/{name}")
+    public String getMypage(@PathVariable("name") String name, Model model){
+        MypageDto mypageDto = libraryAPIService.getMyInfo(name);
+
+        model.addAttribute("books", mypageDto.getBookLists());
+        model.addAttribute("aladin_books", mypageDto.getAladin_bookLists());
+        model.addAttribute("google_books", mypageDto.getGoogle_bookLists());
+
+        return "mypage";
     }
 }

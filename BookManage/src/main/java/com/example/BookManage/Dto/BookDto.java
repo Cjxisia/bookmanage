@@ -16,4 +16,5 @@ public class BookDto {
     private String ISBN;
     private String img;
     private String des;
+    private String category;
 }

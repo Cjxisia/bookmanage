@@ -61,6 +61,6 @@ public class NaverLoginController {
 
         session.setAttribute("nickname", nickname);
 
-        return "Main_page";
+        return "redirect:/";
     }
 }
