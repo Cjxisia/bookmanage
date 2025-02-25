@@ -311,10 +311,10 @@ public class LibraryAPIService {
         String apikey = apiKeyProperties.getKeys().get("aladin");
         String newBookurl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
                 apikey +
-                "&QueryType=ItemNewSpecial&MaxResults=30&start=1&SearchTarget=All&output=js&Version=20131101";
+                "&QueryType=ItemNewSpecial&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101";
         String bestBookurl = "http://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey=" +
                 apikey +
-                "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=All&output=js&Version=20131101";
+                "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101";
 
         System.out.println(newBookurl);
 
@@ -360,9 +360,10 @@ public class LibraryAPIService {
         String aladinapikey = apiKeyProperties.getKeys().get("aladin");
         String aladinurl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey="
                 + aladinapikey
-                + "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=All&CategoryID="
+                + "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=Book&output=js&CategoryID="
                 + mostCommonCategory;
 
+        System.out.println(description);
         List<String>keyword = extraction_keyword(description);
         String keywordQuery = String.join("+", keyword);
         List<BookDto> google_bookLists = getGoogleBook(keywordQuery);
