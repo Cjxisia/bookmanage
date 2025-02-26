@@ -62,7 +62,7 @@ public class LibraryAPIService {
         }
     }
 
-    public List<String> extraction_keyword(String text){
+    public List<String> extraction_keyword(String text, int maxSize){
         loadStopwords();
 
         CharSequence normalized = OpenKoreanTextProcessor.normalize(text);
@@ -84,7 +84,7 @@ public class LibraryAPIService {
 
         List<String> topKeywords = frequencyMap.entrySet().stream()
                 .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
-                .limit(5)
+                .limit(maxSize)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
@@ -260,7 +260,6 @@ public class LibraryAPIService {
         String processtitle = title.replaceAll("\\s", "");
         System.out.println("title:" + processtitle);
         String description = "";
-        String google_des = "";
         List<BookDto> google_bookLists = new ArrayList<>();
 
         List<BookDto> bookLists = getBookInfo(processtitle, 1).getBookLists();
@@ -280,12 +279,13 @@ public class LibraryAPIService {
 
             if (items != null && items.length() > 0) {
                 JSONObject volumeInfo = items.getJSONObject(0).getJSONObject("volumeInfo");
-                google_des = volumeInfo.optString("description");
-                System.out.println("google_des:"+google_des);
-                System.out.println("items:" + items);
-                description = description + google_des;
-            } else {
-                System.out.println("No book found in Google Books: " + processtitle);
+                String google_title = volumeInfo.optString("title");
+                System.out.println("google_title:" + google_title);
+                if(google_title.contains(title)) {
+                    System.out.println("google_des:" + volumeInfo.optString("description"));
+                    System.out.println("items:" + items);
+                    description = description + volumeInfo.optString("description");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -297,10 +297,14 @@ public class LibraryAPIService {
         if (!bookLists.isEmpty()) {
             description = description + aladinLists.get(0).getDes();
             description = description + title;
-            System.out.println(description);
+            System.out.println("aladin_des:" + description);
         }
 
-        List<String>keyword = extraction_keyword(description);
+        List<String>keyword = extraction_keyword(description, 3);
+        List<String>titleword = extraction_keyword(title, 2);
+        keyword.removeAll(titleword);
+        keyword.addAll(titleword);
+        System.out.println(keyword);
         String keywordQuery = String.join("+", keyword);
         google_bookLists = getGoogleBook(keywordQuery);
 
@@ -364,7 +368,7 @@ public class LibraryAPIService {
                 + mostCommonCategory;
 
         System.out.println(description);
-        List<String>keyword = extraction_keyword(description);
+        List<String>keyword = extraction_keyword(description,5);
         String keywordQuery = String.join("+", keyword);
         List<BookDto> google_bookLists = getGoogleBook(keywordQuery);
         List<BookDto>aladinBook = getAladinBook(aladinurl);
