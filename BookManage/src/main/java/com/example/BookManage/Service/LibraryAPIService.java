@@ -62,7 +62,7 @@ public class LibraryAPIService {
         }
     }
 
-    public List<String> extraction_keyword(String text, int maxSize){
+    public List<String> extraction_keyword(String text, int maxSize) {
         loadStopwords();
 
         CharSequence normalized = OpenKoreanTextProcessor.normalize(text);
@@ -72,26 +72,35 @@ public class LibraryAPIService {
 
         List<String> nouns = tokenList.stream()
                 .filter(token -> token.pos().toString().equals("Noun") && !token.pos().toString().equals("NNP"))
-                .map(token -> token.text()) // 텍스트 추출
+                .map(KoreanTokenizer.KoreanToken::text) // 텍스트 추출
                 .filter(noun -> !stopwords.contains(noun))
                 .collect(Collectors.toList());
 
-        System.out.println("text:" + text);
-        System.out.println("nonus:" + nouns);
+        System.out.println("text: " + text);
+        System.out.println("nouns: " + nouns);
 
         Map<String, Long> frequencyMap = nouns.stream()
                 .collect(Collectors.groupingBy(noun -> noun, Collectors.counting()));
 
+        Map<String, Integer> firstOccurrence = new HashMap<>();
+        for (int i = 0; i < nouns.size(); i++) {
+            firstOccurrence.putIfAbsent(nouns.get(i), i); // 처음 등장한 위치만 저장
+        }
+
         List<String> topKeywords = frequencyMap.entrySet().stream()
-                .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
+                .sorted((entry1, entry2) -> {
+                    int freqCompare = Long.compare(entry2.getValue(), entry1.getValue()); // 빈도수 내림차순 정렬
+                    return (freqCompare != 0) ? freqCompare : Integer.compare(firstOccurrence.get(entry1.getKey()), firstOccurrence.get(entry2.getKey())); // 동일한 빈도수일 경우 등장 순서 유지
+                })
                 .limit(maxSize)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        System.out.println(topKeywords);
+        System.out.println("topKeywords: " + topKeywords);
 
         return topKeywords;
     }
+
 
     public List<BookDto> getGoogleBook(String keyword){
         String apikey = apiKeyProperties.getKeys().get("google");
@@ -264,7 +273,9 @@ public class LibraryAPIService {
 
         List<BookDto> bookLists = getBookInfo(processtitle, 1).getBookLists();
         if (!bookLists.isEmpty()) {
-            description = bookLists.get(0).getDes();
+            if(bookLists.get(0).getBookTitle().contains(title)) {
+                description = bookLists.get(0).getDes();
+            }
         }
 
         String googleapikey = apiKeyProperties.getKeys().get("google");
@@ -294,10 +305,11 @@ public class LibraryAPIService {
         String aladinapikey = apiKeyProperties.getKeys().get("aladin");
         String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + processtitle + "&QueryType=keyword&MaxResults=1&Start=1&output=js";
         List<BookDto> aladinLists = getAladinBook(aladinurl);
-        if (!bookLists.isEmpty()) {
-            description = description + aladinLists.get(0).getDes();
-            description = description + title;
-            System.out.println("aladin_des:" + description);
+        if (!aladinLists.isEmpty()) {
+            if(aladinLists.get(0).getBookTitle().contains(title)) {
+                description = description + aladinLists.get(0).getDes();
+                System.out.println("aladin_des:" + description);
+            }
         }
 
         List<String>keyword = extraction_keyword(description, 3);
