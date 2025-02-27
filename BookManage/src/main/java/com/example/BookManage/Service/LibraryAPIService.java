@@ -213,8 +213,8 @@ public class LibraryAPIService {
         return bookLists;
     }
 
-    public BookResponseDto getBookInfo(String searchtext, int Start) {
-        String url = "https://openapi.naver.com/v1/search/book.json?query=" + searchtext + "&display=10&start=" + Start;
+    public BookResponseDto getBookInfo(String searchtext, int start, int display) {
+        String url = "https://openapi.naver.com/v1/search/book.json?query=" + searchtext + "&display="+ display +"&start=" + start;
 
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
@@ -271,10 +271,17 @@ public class LibraryAPIService {
         String description = "";
         List<BookDto> google_bookLists = new ArrayList<>();
 
-        List<BookDto> bookLists = getBookInfo(processtitle, 1).getBookLists();
+        List<BookDto> bookLists = getBookInfo(processtitle, 1, 1).getBookLists();
         if (!bookLists.isEmpty()) {
             if(bookLists.get(0).getBookTitle().contains(title)) {
                 description = bookLists.get(0).getDes();
+            }else{
+                String aladinapikey = apiKeyProperties.getKeys().get("aladin");
+                String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + processtitle + "&QueryType=keyword&MaxResults=1&Start=1&output=js";
+                bookLists = getAladinBook(aladinurl);
+                if(bookLists.get(0).getBookTitle().contains(title)) {
+                    description = bookLists.get(0).getDes();
+                }
             }
         }
 

@@ -4,5 +4,50 @@
 
 </head>
 <body>
-<h3>Hi!</h3>
+<li th:each="book : ${books}">
+    <span th:text="${book.bookTitle}">책 제목</span> <br>
+
+    <span th:text="${book.bookAuth}">저자</span> <br>
+
+    <span th:text="${book.bookPub}">출판사</span> <br>
+
+    <span th:text="${book.bookPubYear}">출판 연도</span> <br>
+
+    <span th:text="${book.des}">줄거리</span> <br>
+
+    <a th:href="${book.link}" target="_blank" th:text="${book.link}"></a> <br>
+
+    <span th:text="${book.discount}">가격</span> <br>
+
+    <span th:text="${book.ISBN}">ISBN</span> <br>
+
+    <img th:src="${book.img}" alt="Book Image" width="100" height="150">
+</li>
+
+<hr>
+<li th:each="google_book : ${google_books}">
+    <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
+        <span th:text="${google_book.bookTitle}">책 제목</span> <br>
+    </a>
+
+    <span th:text="${google_book.bookAuth}">저자</span> <br>
+
+    <span th:text="${google_book.bookPub}">출판사</span> <br>
+
+    <span th:text="${google_book.bookPubYear}">출판 연도</span> <br>
+
+    <span th:text="${#strings.length(google_book.des) > 0 ? #strings.substring(google_book.des, 0, (google_book.des.length() > 400 ? 400 : google_book.des.length())) + (google_book.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
+
+    <a th:href="${google_book.link}" target="_blank" th:text="${google_book.link}"></a> <br>
+
+    <span th:text="${google_book.discount}">가격</span> <br>
+
+    <span th:text="${google_book.ISBN}">ISBN</span> <br>
+
+    <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
+        <img th:src="${google_book.img}" alt="Book Image" width="100" height="150">
+    </a>
+</li>
+
+
 </body>

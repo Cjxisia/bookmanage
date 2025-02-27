@@ -57,6 +57,6 @@ public class BooksController {
         model.addAttribute("aladin_books", mypageDto.getAladin_bookLists());
         model.addAttribute("google_books", mypageDto.getGoogle_bookLists());
 
-        return "mypage";
+        return "my_page";
     }
 }

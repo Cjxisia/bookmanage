@@ -44,7 +44,7 @@ public class LibraryAPIController {
         System.out.println("검색어" + searchText);
         System.out.println("시작값" + Start);
 
-        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, Start);
+        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, Start, 10);
         model.addAttribute("books", bookResponse.getBookLists());
         model.addAttribute("searchText", searchText);
         model.addAttribute("totalResults", bookResponse.getTotalResults());

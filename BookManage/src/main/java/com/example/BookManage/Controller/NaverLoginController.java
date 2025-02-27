@@ -1,5 +1,6 @@
 package com.example.BookManage.Controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -62,5 +63,13 @@ public class NaverLoginController {
         session.setAttribute("nickname", nickname);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session, HttpServletRequest request){
+        session.removeAttribute("nickname");
+        String referer = request.getHeader("Referer");
+
+        return "redirect:" + (referer != null ? referer : "/");
     }
 }
