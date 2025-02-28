@@ -300,9 +300,11 @@ public class LibraryAPIService {
                 String google_title = volumeInfo.optString("title");
                 System.out.println("google_title:" + google_title);
                 if(google_title.contains(title)) {
-                    System.out.println("google_des:" + volumeInfo.optString("description"));
-                    System.out.println("items:" + items);
-                    description = description + volumeInfo.optString("description");
+                    if(!description.contains(volumeInfo.optString("description"))) {
+                        System.out.println("google_des:" + volumeInfo.optString("description"));
+                        System.out.println("items:" + items);
+                        description = description + volumeInfo.optString("description");
+                    }
                 }
             }
         } catch (Exception e) {
@@ -314,8 +316,10 @@ public class LibraryAPIService {
         List<BookDto> aladinLists = getAladinBook(aladinurl);
         if (!aladinLists.isEmpty()) {
             if(aladinLists.get(0).getBookTitle().contains(title)) {
-                description = description + aladinLists.get(0).getDes();
-                System.out.println("aladin_des:" + description);
+                if(!description.contains(aladinLists.get(0).getDes())) {
+                    description = description + aladinLists.get(0).getDes();
+                    System.out.println("aladin_des:" + description);
+                }
             }
         }
 
