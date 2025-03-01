@@ -39,5 +39,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:///C:/Users/ijj28/Desktop/mine-backend/uploads/");
         registry.addResourceHandler("/css/**")
                 .addResourceLocations("classpath:/static/css/");
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/");
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("classpath:/static/js/"); // 이미지 경로 추가
     }
 }

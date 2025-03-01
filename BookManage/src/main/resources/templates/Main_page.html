@@ -7,9 +7,12 @@
 </head>
 <body>
 
-<h1>도서 검색</h1>
+<!-- 로고 추가 -->
+<div class="logo-container">
+    <img src="/images/logo.png" alt="사이트 로고">
+</div>
+
 <form th:action="@{/books}" method="get">
-    <label for="searchText">검색어:</label>
     <input type="text" id="searchText" name="searchText" required>
     <button type="submit">검색</button>
 </form>
@@ -27,9 +30,10 @@
 </div>
 
 <!-- 신간 책 -->
-<h3>새로운 책들</h3>
-<button class="scroll-btn" onclick="scrollLeft('newbook-container')">◀</button>
-<button class="scroll-btn" onclick="scrollRight('newbook-container')">▶</button>
+<h3>New Books</h3>
+<button class="scroll-btn" onclick="scrollLeftAction('newbook-container')">◀</button>
+<button class="scroll-btn" onclick="scrollRightAction('newbook-container')">▶</button>
+
 <div class="book-container" id="newbook-container">
     <div class="book-item" th:each="newbook : ${newbook}">
         <a th:href="@{/books/detail/{title}(title=${newbook.bookTitle})}">
@@ -44,9 +48,10 @@
 </div>
 
 <!-- 베스트셀러 -->
-<h3>베스트 책들</h3>
-<button class="scroll-btn" onclick="scrollLeft('bestbook-container')">◀</button>
-<button class="scroll-btn" onclick="scrollRight('bestbook-container')">▶</button>
+<h3>Best Books</h3>
+<button class="scroll-btn" onclick="scrollLeftAction('bestbook-container')">◀</button>
+<button class="scroll-btn" onclick="scrollRightAction('bestbook-container')">▶</button>
+
 <div class="book-container" id="bestbook-container">
     <div class="book-item" th:each="bestbook : ${bestbook}">
         <a th:href="@{/books/detail/{title}(title=${bestbook.bookTitle})}">
@@ -62,11 +67,11 @@
 
 <!-- JavaScript: 좌우 스크롤 기능 -->
 <script>
-    function scrollLeft(containerId) {
+    function scrollLeftAction(containerId) {
         document.getElementById(containerId).scrollBy({ left: -300, behavior: 'smooth' });
     }
 
-    function scrollRight(containerId) {
+    function scrollRightAction(containerId) {
         document.getElementById(containerId).scrollBy({ left: 300, behavior: 'smooth' });
     }
 </script>
