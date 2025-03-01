@@ -1,2 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+<h3>북마크한 책들</h3>
+<li th:each="book : ${books}">
+    <span th:text="${book.bookTitle}">책 제목</span> <br>
+
+    <span th:text="${book.bookAuth}">저자</span> <br>
+
+    <span th:text="${book.bookPub}">출판사</span> <br>
+
+    <span th:text="${book.bookPubYear}">출판 연도</span> <br>
+
+    <span th:text="${book.des}">줄거리</span> <br>
+
+    <a th:href="${book.link}" target="_blank" th:text="${book.link}"></a> <br>
+
+    <span th:text="${book.discount}">가격</span> <br>
+
+    <span th:text="${book.ISBN}">ISBN</span> <br>
+
+    <img th:src="${book.img}" alt="Book Image" width="100" height="150">
+</li>
+
+<h3>카테고리 별 추천</h3>
+<li th:each="aladin_book : ${aladin_books}">
+    <span th:text="${aladin_book.bookTitle}">책 제목</span> <br>
+
+    <span th:text="${aladin_book.bookAuth}">저자</span> <br>
+
+    <span th:text="${aladin_book.bookPub}">출판사</span> <br>
+
+    <span th:text="${aladin_book.bookPubYear}">출판 연도</span> <br>
+
+    <span th:text="${aladin_book.des}">줄거리</span> <br>
+
+    <a th:href="${aladin_book.link}" target="_blank" th:text="${aladin_book.link}"></a> <br>
+
+    <span th:text="${aladin_book.discount}">가격</span> <br>
+
+    <span th:text="${aladin_book.ISBN}">ISBN</span> <br>
+
+    <img th:src="${aladin_book.img}" alt="Book Image" width="100" height="150">
+</li>
+
+<h3>키워드 별 추천</h3>
+<li th:each="google_book : ${google_books}">
+    <span th:text="${google_book.bookTitle}">책 제목</span> <br>
+
+    <span th:text="${google_book.bookAuth}">저자</span> <br>
+
+    <span th:text="${google_book.bookPub}">출판사</span> <br>
+
+    <span th:text="${google_book.bookPubYear}">출판 연도</span> <br>
+
+    <span th:text="${google_book.des}">줄거리</span> <br>
+
+    <a th:href="${google_book.link}" target="_blank" th:text="${google_book.link}"></a> <br>
+
+    <span th:text="${google_book.discount}">가격</span> <br>
+
+    <span th:text="${google_book.ISBN}">ISBN</span> <br>
+
+    <img th:src="${google_book.img}" alt="Book Image" width="100" height="150">
+</li>
+</body>

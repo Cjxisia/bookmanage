@@ -384,10 +384,12 @@ public class LibraryAPIService {
                 .findFirst()
                 .orElse(null);
 
+        System.out.println(mostCommonCategory);
+
         String aladinapikey = apiKeyProperties.getKeys().get("aladin");
         String aladinurl = "https://www.aladin.co.kr/ttb/api/ItemList.aspx?ttbkey="
                 + aladinapikey
-                + "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=Book&output=js&CategoryID="
+                + "&QueryType=Bestseller&MaxResults=30&start=1&SearchTarget=Book&output=js&Version=20131101&CategoryID="
                 + mostCommonCategory;
 
         System.out.println(description);
@@ -396,6 +398,6 @@ public class LibraryAPIService {
         List<BookDto> google_bookLists = getGoogleBook(keywordQuery);
         List<BookDto>aladinBook = getAladinBook(aladinurl);
 
-        return new MypageDto(mybookDto, google_bookLists, aladinBook);
+        return new MypageDto(mybookDto, aladinBook, google_bookLists);
     }
 }
