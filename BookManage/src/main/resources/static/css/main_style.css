@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
+
+input, button, select {
+    padding: 8px;
+    margin-top: 10px;
+}
+
+.login-btn, .user-info {
+    margin-top: 20px;
+}
+
+.book-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 20px;
+    padding: 10px;
+    scroll-behavior: smooth;
+}
+
+.book-item {
+    flex: 0 0 auto;
+    width: 200px;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden; /* 텍스트가 영역을 넘지 않도록 숨김 처리 */
+}
+
+.book-item p {
+    white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 */
+    overflow: hidden;    /* 넘치는 텍스트는 잘림 */
+    text-overflow: ellipsis; /* 잘린 부분은 '...'으로 표시 */
+}
+
+.book-item img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.scroll-btn {
+    cursor: pointer;
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+}
