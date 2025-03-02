@@ -45,9 +45,21 @@ public class LibraryAPIController {
         System.out.println("시작값" + Start);
 
         BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, Start, 10);
+        int totalResults = bookResponse.getTotalResults();
+        int totalPages = (int) Math.ceil((double) totalResults / 10);
+        int pageStart = ((Start - 1) / 10) * 10 + 1;
+        int pageEnd = Math.min(pageStart + 9, totalPages);
+        int prevStart = pageStart - 10;
+        int nextStart = pageStart + 10;
+
         model.addAttribute("books", bookResponse.getBookLists());
         model.addAttribute("searchText", searchText);
         model.addAttribute("totalResults", bookResponse.getTotalResults());
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPageStart", pageStart);
+        model.addAttribute("currentPageEnd", pageEnd);
+        model.addAttribute("prevStart", prevStart);
+        model.addAttribute("nextStart", nextStart);
 
         return "books_page";
     }
