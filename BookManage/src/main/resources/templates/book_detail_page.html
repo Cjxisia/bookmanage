@@ -1,53 +1,133 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script>
+        var loggedInUser = "[[${session.nickname}]]";
 
+        function bookmarkBook(button) {
+            if (!loggedInUser || loggedInUser === "null") {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+            const bookTitle = button.getAttribute("data-title");
+            const bookAuth = button.getAttribute("data-auth");
+            const bookPub = button.getAttribute("data-pub");
+            const bookPubYear = button.getAttribute("data-pubyear");
+            const des = button.getAttribute("data-des");
+            const link = button.getAttribute("data-link");
+            const discount = button.getAttribute("data-discount");
+            const ISBN = button.getAttribute("data-isbn");
+            const img = button.getAttribute("data-img");
+
+            $.ajax({
+                type: "POST",
+                url: "/bookmark",
+                contentType: "application/x-www-form-urlencoded",
+                data: {
+                    bookTitle: bookTitle,
+                    bookAuth: bookAuth,
+                    bookPub: bookPub,
+                    bookPubYear: bookPubYear,
+                    des: des,
+                    link:link,
+                    discount: discount,
+                    ISBN: ISBN,
+                    img: img
+                },
+                success: function(response) {
+                    alert("북마크에 추가되었습니다!");
+                },
+                error: function() {
+                    alert("오류가 발생했습니다.");
+                }
+            });
+        }
+    </script>
+    <link rel="stylesheet" type="text/css" href="/css/detail_page.css">
 </head>
 <body>
-<li th:each="book : ${books}">
-    <span th:text="${book.bookTitle}">책 제목</span> <br>
 
-    <span th:text="${book.bookAuth}">저자</span> <br>
+<div class="logo-container">
+    <a th:href="@{/}">
+        <img src="/images/logo.png" alt="사이트 로고">
+    </a>
+</div>
 
-    <span th:text="${book.bookPub}">출판사</span> <br>
+<div class="login-btn" th:if="${session.nickname == null}">
+    <a th:href="@{/naver/login}">
+        <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인 버튼">
+    </a>
+</div>
 
-    <span th:text="${book.bookPubYear}">출판 연도</span> <br>
+<div class="user-info" th:if="${session.nickname != null}">
+    <p><strong>환영합니다, <span th:text="${session.nickname}"></span>님!</strong></p>
+    <a th:href="@{/mypage/{name}(name=${session.nickname})}">마이페이지</a>
+    <a th:href="@{/logout}">로그아웃</a>
+</div>
 
-    <span th:text="${book.des}">줄거리</span> <br>
+<ul class="book-list">
+    <li th:each="book : ${books}">
+        <div class="book-detail">
+            <!-- 왼쪽 이미지 영역 -->
+            <div class="book-image">
+                <img th:src="${book.img}" alt="Book Image"
+                     onerror="this.onerror=null; this.src='/images/not_found.png';">
+            </div>
+            <!-- 오른쪽 상세정보 영역 -->
+            <div class="book-info">
+                <h3 th:text="${book.bookTitle}">책 제목</h3>
+                <p><strong>저자:</strong> <span th:text="${book.bookAuth}">저자</span></p>
+                <p><strong>출판사:</strong> <span th:text="${book.bookPub}">출판사</span></p>
+                <p><strong>출판 연도:</strong> <span th:text="${book.bookPubYear}">연도</span></p>
+                <p><strong>줄거리:</strong> <span th:text="${book.des}">줄거리</span></p>
+                <p><strong>가격:</strong> <span th:text="${book.discount}">가격</span></p>
+                <p><strong>ISBN:</strong> <span th:text="${book.ISBN}">ISBN</span></p>
+                <button class="bookmark-btn"
+                        th:data-title="${book.bookTitle}"
+                        th:data-auth="${book.bookAuth}"
+                        th:data-pub="${book.bookPub}"
+                        th:data-pubyear="${book.bookPubYear}"
+                        th:data-des="${book.des != null and book.des.length() > 0 ? #strings.substring(book.des, 0, (book.des.length() > 400 ? 400 : book.des.length())) + (book.des.length() > 400 ? '...' : '') : ''}"
+                        th:data-link="${book.link}"
+                        th:data-discount="${book.discount}"
+                        th:data-isbn="${book.ISBN}"
+                        th:data-img="${book.img}"
+                        onclick="bookmarkBook(this)">⭐ 북마크</button>
+                <p><a th:href="${book.link}" target="_blank" th:text="${book.link}">상세 링크</a></p>
+            </div>
+        </div>
+    </li>
+</ul>
 
-    <a th:href="${book.link}" target="_blank" th:text="${book.link}"></a> <br>
-
-    <span th:text="${book.discount}">가격</span> <br>
-
-    <span th:text="${book.ISBN}">ISBN</span> <br>
-
-    <img th:src="${book.img}" alt="Book Image" width="100" height="150">
-</li>
 
 <hr>
-<li th:each="google_book : ${google_books}">
-    <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
-        <span th:text="${google_book.bookTitle}">책 제목</span> <br>
-    </a>
 
-    <span th:text="${google_book.bookAuth}">저자</span> <br>
+<h3>이런책은 어떠세요?</h3>
+<div class="google-book-container">
+    <button class="scroll-btn left-btn" onclick="scrollLeftAction()">❮</button>
+    <div class="google-book-list" id="book-list">
+        <div class="google-book-item" th:each="google_book : ${google_books}">
+            <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
+                <img th:src="${google_book.img}" alt="Book Image"
+                     onerror="this.onerror=null; this.src='/images/not_found.png';">>
+            </a>
+            <span class="book-title" th:text="${google_book.bookTitle}">책 제목</span> <br>
+            <span th:text="${google_book.bookAuth}">저자</span> <br>
+            <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">상세 보기</a>
+        </div>
+    </div>
+    <button class="scroll-btn right-btn" onclick="scrollRightAction()">❯</button>
+</div>
 
-    <span th:text="${google_book.bookPub}">출판사</span> <br>
+<script>
+    function scrollLeftAction() {
+        document.getElementById('book-list').scrollBy({ left: -300, behavior: 'smooth' });
+    }
 
-    <span th:text="${google_book.bookPubYear}">출판 연도</span> <br>
-
-    <span th:text="${#strings.length(google_book.des) > 0 ? #strings.substring(google_book.des, 0, (google_book.des.length() > 400 ? 400 : google_book.des.length())) + (google_book.des.length() > 400 ? '...' : '') : ''}">줄거리</span> <br>
-
-    <a th:href="${google_book.link}" target="_blank" th:text="${google_book.link}"></a> <br>
-
-    <span th:text="${google_book.discount}">가격</span> <br>
-
-    <span th:text="${google_book.ISBN}">ISBN</span> <br>
-
-    <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
-        <img th:src="${google_book.img}" alt="Book Image" width="100" height="150">
-    </a>
-</li>
-
+    function scrollRightAction() {
+        document.getElementById('book-list').scrollBy({ left: 300, behavior: 'smooth' });
+    }
+</script>
 
 </body>
+</html>

@@ -41,10 +41,13 @@ public class LibraryAPIController {
 
         session.setAttribute("searchText", searchText);
 
-        System.out.println("검색어" + searchText);
-        System.out.println("시작값" + Start);
+        int book_start = (Start-1) * 10 +1;
 
-        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, Start, 10);
+        System.out.println("검색어" + searchText);
+        System.out.println("시작값" + book_start);
+
+
+        BookResponseDto bookResponse = libraryapiService.getBookInfo(searchText, book_start, 10);
         int totalResults = bookResponse.getTotalResults();
         int totalPages = (int) Math.ceil((double) totalResults / 10);
         int pageStart = ((Start - 1) / 10) * 10 + 1;

@@ -37,7 +37,8 @@
 <div class="book-container" id="newbook-container">
     <div class="book-item" th:each="newbook : ${newbook}">
         <a th:href="@{/books/detail/{title}(title=${newbook.bookTitle})}">
-            <img th:src="${newbook.img}" alt="Book Image">
+            <img th:src="${newbook.img}" alt="Book Image"
+            onerror="this.onerror=null; this.src='/images/not_found.png';">
         </a>
         <p><strong th:text="${newbook.bookTitle}">책 제목</strong></p>
         <p th:text="${newbook.bookAuth}">저자</p>
@@ -55,7 +56,8 @@
 <div class="book-container" id="bestbook-container">
     <div class="book-item" th:each="bestbook : ${bestbook}">
         <a th:href="@{/books/detail/{title}(title=${bestbook.bookTitle})}">
-            <img th:src="${bestbook.img}" alt="Book Image">
+            <img th:src="${bestbook.img}" alt="Book Image"
+                 onerror="this.onerror=null; this.src='/images/not_found.png';">
         </a>
         <p><strong th:text="${bestbook.bookTitle}">책 제목</strong></p>
         <p th:text="${bestbook.bookAuth}">저자</p>

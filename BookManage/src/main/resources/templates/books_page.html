@@ -67,7 +67,8 @@
 <div class="book-list">
     <div class="book-card" th:each="book : ${books}">
         <a th:href="@{/books/detail/{title}(title=${book.bookTitle})}">
-            <img th:src="${book.img}" alt="Book Image">
+            <img th:src="${book.img}" alt="Book Image"
+                 onerror="this.onerror=null; this.src='/images/not_found.png';">
         </a>
         <div class="book-info">
             <a th:href="@{/books/detail/{title}(title=${book.bookTitle})}">

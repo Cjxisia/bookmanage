@@ -1,0 +1,187 @@
+/* google_book 리스트 컨테이너 */
+.google-book-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+/* 가로 스크롤 리스트 */
+.google-book-list {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px;
+    white-space: nowrap;
+}
+
+.google-book-item {
+    flex: 0 0 auto;
+    width: 180px;
+    min-width: 0;              /* 부모도 축소 허용 */
+    padding: 10px;
+    box-sizing: border-box;    /* 패딩/보더 포함 */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    background: #fff;
+}
+
+.google-book-item .book-title {
+    display: block;
+    width: 100%;
+    max-width: 100%;           /* 부모의 폭을 초과하지 않음 */
+    min-width: 0;              /* flex 컨텍스트에서 축소 허용 */
+    box-sizing: border-box;    /* 패딩/보더 포함 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 1;            /* 텍스트 요소가 축소되도록 설정 */
+}
+
+.google-book-item img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.google-book-item a {
+    display: block;
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* 좌우 이동 버튼 */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ddd;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.scroll-btn:hover {
+    background: #bbb;
+}
+
+.left-btn {
+    left: 10px;
+}
+
+.right-btn {
+    right: 10px;
+}
+
+/* 전체 리스트 기본 스타일 초기화 */
+.book-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 각 책 상세정보 항목 */
+.book-list li {
+    margin-bottom: 20px;
+}
+
+/* 책 상세정보 컨테이너: 이미지와 상세정보를 좌우로 배치 */
+.book-detail {
+    display: flex;
+    align-items: center;  /* 이미지의 중앙에 맞춰 상세 정보도 중앙 정렬 */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 왼쪽 이미지 영역 */
+.book-image {
+    flex: 0 0 auto;
+    margin-right: 20px;
+}
+
+.book-image img {
+    width: 450px;       /* 이미지 크기 증가 */
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* 오른쪽 상세정보 영역 */
+.book-info {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-info h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+.book-info p {
+    margin: 5px 0;
+    line-height: 1.5;
+}
+
+.book-info a {
+    color: #007acc;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.book-info a:hover {
+    text-decoration: underline;
+}
+
+.logo-container {
+    top: 20px; /* 상단에서 20px 떨어진 위치 */
+    left: 20px; /* 좌측에서 20px 떨어진 위치 */
+    margin-bottom: 50px;
+}
+
+.logo-container img {
+    width: 150px; /* 로고 이미지의 너비 */
+    height: auto; /* 이미지의 비율을 유지하며 높이 자동 조절 */
+}
+
+.login-btn, .user-info {
+    position: fixed; /* 우상단 고정 */
+    top: 30px;       /* 상단에서 30px */
+    right: 10px;     /* 우측에서 10px */
+    z-index: 1000;   /* 다른 요소 위에 표시되도록 */
+    text-align: right;
+}
+
+.login-btn img {
+    width: 100px; /* 이미지 크기 줄이기 */
+    height: auto; /* 비율에 맞게 높이 자동 설정 */
+}
+
+.bookmark-btn {
+    background: #555;
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    align-self: flex-start;
+    width:100px;
+}
+
+
+.bookmark-btn:hover {
+    background-color: #e0a800;
+}

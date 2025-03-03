@@ -196,7 +196,7 @@ public class LibraryAPIService {
                 bookDto.setBookTitle(bookNode.path("title").asText());
                 bookDto.setBookAuth(bookNode.path("author").asText());
                 bookDto.setBookPub(bookNode.path("publisher").asText());
-                bookDto.setBookPubYear(bookNode.path("pubdate").asText());
+                bookDto.setBookPubYear(bookNode.path("pubDate").asText());
                 bookDto.setISBN(bookNode.path("isbn").asText());
                 bookDto.setImg(bookNode.path("cover").asText());
                 bookDto.setDiscount(bookNode.path("discount").asText());
@@ -209,6 +209,8 @@ public class LibraryAPIService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("aladinbook:" + bookLists);
 
         return bookLists;
     }
@@ -265,24 +267,29 @@ public class LibraryAPIService {
 
     public DetailBookDto getBookInfoDetail(String title) {
         String regex = "\\s*\\(.*";
-        title = title.replaceAll(regex, "");
-        String processtitle = title.replaceAll("\\s", "");
-        System.out.println("title:" + processtitle);
+        String replace_title = title.replaceAll(regex, "");
+        String processtitle = replace_title.replaceAll("\\s", "");
+        System.out.println("processtitle:" + processtitle);
         String description = "";
         List<BookDto> google_bookLists = new ArrayList<>();
 
         List<BookDto> bookLists = getBookInfo(processtitle, 1, 1).getBookLists();
         if (!bookLists.isEmpty()) {
-            if(bookLists.get(0).getBookTitle().contains(title)) {
+            if (bookLists.get(0).getBookTitle().replace(" ", "").contains(title.replace(" ", ""))) {
                 description = bookLists.get(0).getDes();
             }else{
                 String aladinapikey = apiKeyProperties.getKeys().get("aladin");
-                String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + processtitle + "&QueryType=keyword&MaxResults=1&Start=1&output=js";
+                String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + title + "&QueryType=keyword&MaxResults=1&Start=1&SearchTarget=Book&output=js";
+                System.out.println("aladinrul=" + aladinurl);
                 bookLists = getAladinBook(aladinurl);
-                if(bookLists.get(0).getBookTitle().contains(title)) {
-                    description = bookLists.get(0).getDes();
-                }
+                description = bookLists.get(0).getDes();
             }
+        }else{
+            String aladinapikey = apiKeyProperties.getKeys().get("aladin");
+            String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + title + "&QueryType=keyword&MaxResults=1&Start=1&SearchTarget=Book&output=js";
+            System.out.println("aladinrul=" + aladinurl);
+            bookLists = getAladinBook(aladinurl);
+            description = bookLists.get(0).getDes();
         }
 
         String googleapikey = apiKeyProperties.getKeys().get("google");
