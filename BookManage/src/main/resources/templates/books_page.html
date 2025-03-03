@@ -61,6 +61,18 @@
     <button class="search-button" type="submit">검색</button>
 </form>
 
+<div class="login-btn" th:if="${session.nickname == null}">
+    <a th:href="@{/naver/login}">
+        <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인 버튼">
+    </a>
+</div>
+
+<div class="user-info" th:if="${session.nickname != null}">
+    <p><strong>환영합니다, <span th:text="${session.nickname}"></span>님!</strong></p>
+    <a th:href="@{/mypage/{name}(name=${session.nickname})}">마이페이지</a>
+    <a th:href="@{/logout}">로그아웃</a>
+</div>
+
 <h1>📚 도서 검색 결과</h1>
 <h2>총 검색 결과: <span th:text="${totalResults}"></span>권</h2>
 
@@ -114,17 +126,6 @@
     </span>
 </div>
 
-
-<div class="login-btn" th:if="${session.nickname == null}">
-<a th:href="@{/naver/login}">
-    <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="네이버 로그인 버튼">
-</a>
-</div>
-<div class="user-info" th:if="${session.nickname != null}">
-    <p><strong>환영합니다, <span th:text="${session.nickname}"></span>님!</strong></p>
-    <a th:href="@{/mypage/{name}(name=${session.nickname})}">마이페이지</a>
-    <a th:href="@{/logout}">로그아웃</a>
-</div>
 
 <div class="no-result" th:if="${books.size() == 0}">
     <p>검색 결과가 없습니다. 😞</p>
