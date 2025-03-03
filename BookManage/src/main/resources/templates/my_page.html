@@ -10,7 +10,7 @@
         <div th:each="book : ${books}" class="book-item">
             <img th:src="${book.img}" alt="Book Image" class="book-image">
             <div class="book-title">
-                <a th:href="@{/books/detail/{title}(title=${book.bookTitle})}">
+                <a th:href="@{/books/detail(title=${book.bookTitle})}">
                     <h3 th:text="${book.bookTitle}">책 제목</h3>
                 </a>
             </div>
@@ -35,7 +35,7 @@
         <div th:each="aladin_book : ${aladin_books}" class="book-item">
             <img th:src="${aladin_book.img}" alt="Book Image" class="book-image">
             <div class="book-title">
-                <a th:href="@{/books/detail/{title}(title=${aladin_book.bookTitle})}">
+                <a th:href="@{/books/detail(title=${aladin_book.bookTitle})}">
                     <h3 th:text="${aladin_book.bookTitle}">책 제목</h3>
                 </a>
             </div>
@@ -58,7 +58,7 @@
     <h3>키워드 별 추천</h3>
     <div class="book-list">
         <div th:each="google_book : ${google_books}" class="book-item">
-            <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
+            <a th:href="@{/books/detail(title=${google_book.bookTitle})}">
                 <img th:src="${google_book.img}" alt="Book Image" class="book-image"
                      onerror="this.onerror=null; this.src='/images/not_found.png';">
             </a>

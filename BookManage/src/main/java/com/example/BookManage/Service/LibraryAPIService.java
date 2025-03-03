@@ -276,8 +276,9 @@ public class LibraryAPIService {
         System.out.println("processtitle:" + processtitle);
         String description = "";
         List<BookDto> google_bookLists = new ArrayList<>();
+        List<BookDto> bookLists = new ArrayList<>();
 
-        List<BookDto> bookLists = getBookInfo(processtitle, 1, 1).getBookLists();
+        bookLists.add(getBookInfo(processtitle, 1, 1).getBookLists().get(0));
         if (!bookLists.isEmpty()) {
             if (bookLists.get(0).getBookTitle().replace(" ", "").equals(title.replace(" ", ""))) {
                 description = bookLists.get(0).getDes();
