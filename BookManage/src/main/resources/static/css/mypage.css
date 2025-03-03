@@ -17,16 +17,24 @@
 .book-item {
     flex: 0 0 auto;
     width: 200px;
+    height: auto;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
     scroll-snap-align: start;
+    justify-content: space-between;
 }
 
 .book-image {
+    display: block;  /* 이미지를 block 요소로 설정 */
+    margin: 0 auto;  /* 수평으로 가운데 정렬 */
     width: 70%;
     height: auto;
     border-radius: 8px;
+}
+
+.book-description{
+    flex-direction: column;
 }
 
 /* 줄거리가 기본적으로 숨겨짐 */
@@ -43,6 +51,19 @@
 /* '줄거리'가 펼쳐졌을 때 */
 .book-description-text.show-full {
     display: block;
+}
+
+.detail-btn{
+    display:block;
+    margin-top:15px;
+    background: #555;
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-start;
 }
 
 /* 스크롤 버튼 스타일 */
@@ -78,6 +99,16 @@
     align-items: center;
 }
 
+.book-title a{
+    color: #17a2b8;
+    text-decoration: none;
+    margin-top: 5px;
+}
+
+.book-title a:hover{
+    text-decoration: underline;
+}
+
 .book-info {
     text-align: left; /* 정보를 왼쪽 정렬 */
     padding: 10px;
@@ -86,4 +117,70 @@
 
 .book-info p {
     margin: 5px 0;  /* 각 항목의 여백을 적당히 설정 */
+}
+
+.logo-container {
+    top: 20px; /* 상단에서 20px 떨어진 위치 */
+    left: 20px; /* 좌측에서 20px 떨어진 위치 */
+    margin-bottom: 50px;
+}
+
+.logo-container img {
+    width: 150px; /* 로고 이미지의 너비 */
+    height: auto; /* 이미지의 비율을 유지하며 높이 자동 조절 */
+}
+
+/* 로그인 후 사용자 정보 표시 */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 마이페이지와 로그아웃 버튼 스타일 */
+.user-info a {
+    margin-top: 5px;
+    padding: 8px 15px; /* 버튼 크기 조정 */
+    font-size: 14px;    /* 글자 크기 조정 */
+    color: #fff;        /* 글자 색 */
+    background-color: #2f4f4f; /* 버튼 배경색 */
+    border: 2px solid #2f4f4f; /* 테두리 색 추가 */
+    border-radius: 4px; /* 둥근 테두리 */
+    text-decoration: none; /* 밑줄 제거 */
+    transition: all 0.3s ease; /* 부드러운 전환 효과 */
+}
+
+/* 마우스 올렸을 때 효과 */
+.user-info a:hover {
+    background-color: #3e8e41; /* 배경색 변화 */
+    border-color: #3e8e41;     /* 테두리 색 변화 */
+}
+
+/* 활성화 시 효과 (버튼 클릭 시) */
+.user-info a:active {
+    background-color: #2f4f4f; /* 버튼 클릭 시 색상 유지 */
+    border-color: #2f4f4f;     /* 테두리 색상 유지 */
+}
+
+/* 로그인 영역에 테두리 추가 (테두리와 그림자 효과) */
+.user-info {
+    border: 2px solid #2f4f4f; /* 테두리 추가 */
+    padding: 10px;  /* 테두리 내 여백 추가 */
+    border-radius: 8px; /* 테두리 둥글게 처리 */
+    background-color: #f4f4f4; /* 배경색 추가 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+}
+
+
+.login-btn, .user-info {
+    position: fixed; /* 우상단 고정 */
+    top: 30px;       /* 상단에서 30px */
+    right: 10px;     /* 우측에서 10px */
+    z-index: 1000;   /* 다른 요소 위에 표시되도록 */
+    text-align: right;
+}
+
+.login-btn img {
+    width: 100px; /* 이미지 크기 줄이기 */
+    height: auto; /* 비율에 맞게 높이 자동 설정 */
 }
