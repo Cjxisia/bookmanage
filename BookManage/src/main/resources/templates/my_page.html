@@ -23,7 +23,7 @@
         <a th:href="@{/logout}">로그아웃</a>
     </div>
 
-    <h3>북마크한 책들</h3>
+    <h3>📚 북마크한 책들</h3>
     <div class="book-list">
         <div th:each="book : ${books}" class="book-item">
             <a th:href="@{/books/detail(title=${book.bookTitle})}">
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <h3>카테고리 별 추천</h3>
+    <h3>📂 카테고리 별 추천</h3>
     <div class="book-list">
         <div th:each="aladin_book : ${aladin_books}" class="book-item">
             <a th:href="@{/books/detail(title=${aladin_book.bookTitle})}">
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <h3>키워드 별 추천</h3>
+    <h3>🔑 키워드 별 추천</h3>
     <div class="book-list">
         <div th:each="google_book : ${google_books}" class="book-item">
             <a th:href="@{/books/detail(title=${google_book.bookTitle})}">
@@ -107,7 +107,6 @@
 </div>
 
 <script>
-    // '더 보기' 버튼 기능
     function toggleDescription(button) {
         const description = button.previousElementSibling;
 
