@@ -20,12 +20,11 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
-    text-align: center;
     scroll-snap-align: start;
 }
 
 .book-image {
-    width: 100%;
+    width: 70%;
     height: auto;
     border-radius: 8px;
 }
@@ -76,4 +75,15 @@
     font-weight: bold;
     line-height: 3.5em;  /* 줄 간격을 적당히 설정 */
     height: 3.5em;  /* 제목이 한 줄로 표시되도록 높이를 설정 */
+    align-items: center;
+}
+
+.book-info {
+    text-align: left; /* 정보를 왼쪽 정렬 */
+    padding: 10px;
+    font-size: 0.9em; /* 폰트 크기 조정 */
+}
+
+.book-info p {
+    margin: 5px 0;  /* 각 항목의 여백을 적당히 설정 */
 }
