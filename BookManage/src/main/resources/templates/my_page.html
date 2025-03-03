@@ -9,20 +9,24 @@
     <div class="book-list">
         <div th:each="book : ${books}" class="book-item">
             <img th:src="${book.img}" alt="Book Image" class="book-image">
-            <div class="book-title" th:text="${book.bookTitle}">책 제목</div>
+            <div class="book-title">
+                <a th:href="@{/books/detail/{title}(title=${book.bookTitle})}">
+                    <h3 th:text="${book.bookTitle}">책 제목</h3>
+                </a>
+            </div>
             <div class="book-info">
-                <div th:text="${book.bookAuth}">저자</div>
-                <div th:text="${book.bookPub}">출판사</div>
-                <div th:text="${book.bookPubYear}">출판 연도</div>
-                <div th:text="${book.discount}">가격</div>
-                <div th:text="${book.ISBN}">ISBN</div>
+                <p><strong>저자:</strong> <span th:text="${book.bookAuth}"></span></p>
+                <p><strong>출판사:</strong> <span th:text="${book.bookPub}"></span></p>
+                <p><strong>출판 연도:</strong> <span th:text="${book.bookPubYear}"></span></p>
+                <p><strong>가격:</strong> <span th:text="${book.discount}"></span> 원</p>
+                <p><strong>ISBN:</strong> <span th:text="${book.ISBN}"></span></p>
             </div>
             <div class="book-description">
                 <strong class="description-title">줄거리:</strong>
                 <span th:text="${book.des}" class="book-description-text">줄거리</span>
                 <span class="show-more" onclick="toggleDescription(this)">더 보기</span>
             </div>
-            <a th:href="${book.link}" target="_blank" class="book-link" th:text="${book.link}">링크</a>
+            <a class="detail-btn" th:href="${book.link}" target="_blank">🔗 자세히 보기</a>
         </div>
     </div>
 
@@ -30,46 +34,58 @@
     <div class="book-list">
         <div th:each="aladin_book : ${aladin_books}" class="book-item">
             <img th:src="${aladin_book.img}" alt="Book Image" class="book-image">
-            <div class="book-title" th:text="${aladin_book.bookTitle}">책 제목</div>
+            <div class="book-title">
+                <a th:href="@{/books/detail/{title}(title=${aladin_book.bookTitle})}">
+                    <h3 th:text="${aladin_book.bookTitle}">책 제목</h3>
+                </a>
+            </div>
             <div class="book-info">
-                <div th:text="${aladin_book.bookAuth}">저자</div>
-                <div th:text="${aladin_book.bookPub}">출판사</div>
-                <div th:text="${aladin_book.bookPubYear}">출판 연도</div>
-                <div th:text="${aladin_book.discount}">가격</div>
-                <div th:text="${aladin_book.ISBN}">ISBN</div>
+                <p><strong>저자:</strong> <span th:text="${aladin_book.bookAuth}"></span></p>
+                <p><strong>출판사:</strong> <span th:text="${aladin_book.bookPub}"></span></p>
+                <p><strong>출판 연도:</strong> <span th:text="${aladin_book.bookPubYear}"></span></p>
+                <p><strong>가격:</strong> <span th:text="${aladin_book.discount}"></span> 원</p>
+                <p><strong>ISBN:</strong> <span th:text="${aladin_book.ISBN}"></span></p>
             </div>
             <div class="book-description">
                 <strong class="description-title">줄거리:</strong>
                 <span th:text="${aladin_book.des}" class="book-description-text">줄거리</span>
                 <span class="show-more" onclick="toggleDescription(this)">더 보기</span>
             </div>
-            <a th:href="${aladin_book.link}" target="_blank" class="book-link" th:text="${aladin_book.link}">링크</a>
+            <a class="detail-btn" th:href="${aladin_book.link}" target="_blank">🔗 자세히 보기</a>
         </div>
     </div>
 
     <h3>키워드 별 추천</h3>
     <div class="book-list">
         <div th:each="google_book : ${google_books}" class="book-item">
-            <img th:src="${google_book.img}" alt="Book Image" class="book-image">
-            <div class="book-title" th:text="${google_book.bookTitle}">책 제목</div>
+            <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
+                <img th:src="${google_book.img}" alt="Book Image" class="book-image"
+                     onerror="this.onerror=null; this.src='/images/not_found.png';">
+            </a>
+            <div class="book-title">
+                <a th:href="@{/books/detail(title=${google_book.bookTitle})}">
+                    <h3 th:text="${google_book.bookTitle}">책 제목</h3>
+                </a>
+            </div>
             <div class="book-info">
-                <div th:text="${google_book.bookAuth}">저자</div>
-                <div th:text="${google_book.bookPub}">출판사</div>
-                <div th:text="${google_book.bookPubYear}">출판 연도</div>
-                <div th:text="${google_book.discount}">가격</div>
-                <div th:text="${google_book.ISBN}">ISBN</div>
+                <p><strong>저자:</strong> <span th:text="${google_book.bookAuth}"></span></p>
+                <p><strong>출판사:</strong> <span th:text="${google_book.bookPub}"></span></p>
+                <p><strong>출판 연도:</strong> <span th:text="${google_book.bookPubYear}"></span></p>
+                <p><strong>가격:</strong> <span th:text="${google_book.discount}"></span> 원</p>
+                <p><strong>ISBN:</strong> <span th:text="${google_book.ISBN}"></span></p>
             </div>
             <div class="book-description">
                 <strong class="description-title">줄거리:</strong>
                 <span th:text="${google_book.des}" class="book-description-text">줄거리</span>
                 <span class="show-more" onclick="toggleDescription(this)">더 보기</span>
             </div>
-            <a th:href="${google_book.link}" target="_blank" class="book-link" th:text="${google_book.link}">링크</a>
+            <a class="detail-btn" th:href="${google_book.link}" target="_blank">🔗 자세히 보기</a>
         </div>
     </div>
 </div>
 
 <script>
+    // '더 보기' 버튼 기능
     function toggleDescription(button) {
         const description = button.previousElementSibling;
 
@@ -82,6 +98,5 @@
         }
     }
 </script>
-
 </body>
 </html>

@@ -114,6 +114,8 @@ public class LibraryAPIService {
             JSONObject googleResponse = new JSONObject(googleBooksResponse);
             JSONArray items = googleResponse.optJSONArray("items");
 
+            System.out.println("구글북스:" + googleResponse);
+
             if (items != null) {
                 int limit = Math.min(items.length(), 10); // 최대 10개까지 처리
                 for (int i = 0; i < limit; i++) {
@@ -142,17 +144,19 @@ public class LibraryAPIService {
                         if (volumeInfo.has("imageLinks")) {
                             bookImageUrl = volumeInfo.getJSONObject("imageLinks").optString("thumbnail", "");
                         }
-                        String discount = "가격 정보 없음";
-                        if (googleResponse.has("saleInfo")) {
-                            JSONObject saleInfo = googleResponse.getJSONObject("saleInfo");
-                            discount = saleInfo.optString("retailPrice", "가격 정보 없음");
+                        String discount = "0";
+                        JSONObject saleInfo = items.getJSONObject(i).optJSONObject("saleInfo");
+                        if (saleInfo != null && saleInfo.has("retailPrice")) {
+                            JSONObject retailPrice = saleInfo.getJSONObject("retailPrice");
+                            if (retailPrice.has("amount")) {
+                                double amount = retailPrice.getDouble("amount");
+                                String currencyCode = retailPrice.optString("currencyCode", "통화 정보 없음");
+                                discount = String.format("%s %.2f", currencyCode, amount);
+                            }
                         }
+
                         String bookDescription = volumeInfo.optString("description", "No description available");
                         String bookLink = volumeInfo.optString("infoLink", "링크 없음");
-
-                        System.out.println("책 제목: " + bookTitle);
-                        System.out.println("책 설명: " + bookDescription);
-                        System.out.println("책 이미지 URL: " + bookImageUrl);
 
                         bookDto.setBookTitle(bookTitle);
                         bookDto.setBookAuth(bookAuth);
@@ -199,7 +203,7 @@ public class LibraryAPIService {
                 bookDto.setBookPubYear(bookNode.path("pubDate").asText());
                 bookDto.setISBN(bookNode.path("isbn").asText());
                 bookDto.setImg(bookNode.path("cover").asText());
-                bookDto.setDiscount(bookNode.path("discount").asText());
+                bookDto.setDiscount(bookNode.path("priceSales").asText());
                 bookDto.setDes(bookNode.path("description").asText());
                 bookDto.setLink(bookNode.path("link").asText());
                 bookDto.setCategory(bookNode.path("categoryName").asText());
@@ -275,14 +279,25 @@ public class LibraryAPIService {
 
         List<BookDto> bookLists = getBookInfo(processtitle, 1, 1).getBookLists();
         if (!bookLists.isEmpty()) {
-            if (bookLists.get(0).getBookTitle().replace(" ", "").contains(title.replace(" ", ""))) {
+            if (bookLists.get(0).getBookTitle().replace(" ", "").equals(title.replace(" ", ""))) {
                 description = bookLists.get(0).getDes();
             }else{
                 String aladinapikey = apiKeyProperties.getKeys().get("aladin");
                 String aladinurl  = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=" + aladinapikey + "&Query=" + title + "&QueryType=keyword&MaxResults=1&Start=1&SearchTarget=Book&output=js";
-                System.out.println("aladinrul=" + aladinurl);
                 bookLists = getAladinBook(aladinurl);
-                description = bookLists.get(0).getDes();
+                if(!bookLists.isEmpty()) {
+                    if (bookLists.get(0).getBookTitle().replace(" ", "").equals(title.replace(" ", ""))) {
+                        description = bookLists.get(0).getDes();
+                    } else {
+                        bookLists = new ArrayList<>();
+                        bookLists.add(getGoogleBook(title).get(0));
+                        description = bookLists.get(0).getDes();
+                    }
+                }else{
+                    bookLists = new ArrayList<>();
+                    bookLists.add(getGoogleBook(title).get(0));
+                    description = bookLists.get(0).getDes();
+                }
             }
         }else{
             String aladinapikey = apiKeyProperties.getKeys().get("aladin");

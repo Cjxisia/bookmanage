@@ -107,13 +107,13 @@
     <button class="scroll-btn left-btn" onclick="scrollLeftAction()">❮</button>
     <div class="google-book-list" id="book-list">
         <div class="google-book-item" th:each="google_book : ${google_books}">
-            <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">
+            <a th:href="@{/books/detail(title=${google_book.bookTitle})}">
                 <img th:src="${google_book.img}" alt="Book Image"
-                     onerror="this.onerror=null; this.src='/images/not_found.png';">>
+                     onerror="this.onerror=null; this.src='/images/not_found.png';">
             </a>
             <span class="book-title" th:text="${google_book.bookTitle}">책 제목</span> <br>
             <span th:text="${google_book.bookAuth}">저자</span> <br>
-            <a th:href="@{/books/detail/{title}(title=${google_book.bookTitle})}">상세 보기</a>
+            <a th:href="@{/books/detail(title=${google_book.bookTitle})}">상세 보기</a>
         </div>
     </div>
     <button class="scroll-btn right-btn" onclick="scrollRightAction()">❯</button>

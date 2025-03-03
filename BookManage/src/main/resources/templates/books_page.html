@@ -78,12 +78,12 @@
 
 <div class="book-list">
     <div class="book-card" th:each="book : ${books}">
-        <a th:href="@{/books/detail/{title}(title=${book.bookTitle})}">
+        <a th:href="@{/books/detail(title=${book.bookTitle})}">
             <img th:src="${book.img}" alt="Book Image"
                  onerror="this.onerror=null; this.src='/images/not_found.png';">
         </a>
         <div class="book-info">
-            <a th:href="@{/books/detail/{title}(title=${book.bookTitle})}">
+            <a th:href="@{/books/detail(title=${book.bookTitle})}">
                 <h3 th:text="${book.bookTitle}">책 제목</h3>
             </a>
             <p><strong>저자:</strong> <span th:text="${book.bookAuth}"></span></p>

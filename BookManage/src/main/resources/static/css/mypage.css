@@ -1,0 +1,79 @@
+/* 기본 컨테이너 설정 */
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+/* 책 리스트 스타일 */
+.book-list {
+    display: flex;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.book-item {
+    flex: 0 0 auto;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    scroll-snap-align: start;
+}
+
+.book-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* 줄거리가 기본적으로 숨겨짐 */
+.book-description-text {
+    display: none;
+}
+
+/* '더 보기' 버튼 스타일 */
+.show-more {
+    color: #007bff;
+    cursor: pointer;
+}
+
+/* '줄거리'가 펼쳐졌을 때 */
+.book-description-text.show-full {
+    display: block;
+}
+
+/* 스크롤 버튼 스타일 */
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.scroll-button-left {
+    left: 10px;
+}
+
+.scroll-button-right {
+    right: 10px;
+}
+
+.book-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;  /* 최대 1줄로 표시 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    line-height: 3.5em;  /* 줄 간격을 적당히 설정 */
+    height: 3.5em;  /* 제목이 한 줄로 표시되도록 높이를 설정 */
+}

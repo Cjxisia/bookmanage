@@ -39,8 +39,8 @@ public class BooksController {
         return "redirect:/books?&searchText=" + URLEncoder.encode(searchText, StandardCharsets.UTF_8);
     }
 
-    @GetMapping("/books/detail/{title}")
-    public String getBookDetail(@PathVariable("title") String title, Model model){
+    @GetMapping("/books/detail")
+    public String getBookDetail(@RequestParam("title") String title, Model model){
         DetailBookDto mixBook = libraryAPIService.getBookInfoDetail(title);
 
         model.addAttribute("books", mixBook.getBookLists());
