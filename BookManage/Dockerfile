@@ -12,5 +12,8 @@ WORKDIR /app
 # 현재 프로젝트의 JAR 파일을 컨테이너로 복사
 COPY build/libs/*.jar app.jar
 
+# 8080 포트 노출
+EXPOSE 8080
+
 # 컨테이너에서 실행할 명령어
 CMD ["java", "-jar", "app.jar"]

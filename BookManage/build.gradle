@@ -13,6 +13,10 @@ java {
 	}
 }
 
+jar{
+	enabled = false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -29,11 +33,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-maven-plugin:3.4.3'
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'org.openkoreantext:open-korean-text:2.3.1'
 	implementation 'org.json:json:20231013'
+	implementation 'com.google.cloud.sql:mysql-socket-factory:1.5.0'
+	implementation 'com.mysql:mysql-connector-j'
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

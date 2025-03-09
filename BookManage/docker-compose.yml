@@ -1,32 +1,35 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8
-    container_name: mysql_container
+  db:
+    image: mysql:latest
+    container_name: mysql_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: book_manage
+      MYSQL_USER: ijj2858
+      MYSQL_PASSWORD: qkrtjrkd!2
+      MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
 
-  spring-app:
+  app:
+    image: bookmanage-spring-app:latest
     build: .
-    container_name: spring_container
+    container_name: spring_app
     restart: always
     depends_on:
-      - mysql
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://34.64.220.12/book_manage?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: bookmanage
+      SPRING_DATASOURCE_PASSWORD: rootpassword
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - app-network
 
-volumes:
-  mysql_data:
+networks:
+  app-network:
