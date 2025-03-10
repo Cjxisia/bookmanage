@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class NaverLoginController {
@@ -27,11 +28,15 @@ public class NaverLoginController {
     private final String state = "RANDOM_STATE"; // CSRF 방지용 state
 
     @GetMapping("/naver/login")
-    public String naverLogin() {
+    public String naverLogin(HttpSession session) {
+        String state = UUID.randomUUID().toString(); // 무작위 state 값 생성
+        session.setAttribute("oauth_state", state); // 세션에 저장
+
         String naverAuthUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
                 + "&client_id=" + clientId
                 + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
                 + "&state=" + state;
+
         return "redirect:" + naverAuthUrl;
     }
 
@@ -39,6 +44,11 @@ public class NaverLoginController {
     public String naverCallback(@RequestParam("code") String code,
                                 @RequestParam("state") String state,
                                 HttpSession session) {  // 세션 추가
+
+        String storedState = (String) session.getAttribute("oauth_state");
+        if (storedState == null || !storedState.equals(state)) {
+            throw new IllegalStateException("잘못된 요청입니다.");
+        }
 
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code"
                 + "&client_id=" + clientId

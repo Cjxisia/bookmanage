@@ -40,6 +40,7 @@ public class LibraryAPIController {
             HttpSession session) {
 
         session.setAttribute("searchText", searchText);
+        session.setAttribute("Start", String.valueOf(Start));
 
         int book_start = (Start-1) * 10 +1;
 

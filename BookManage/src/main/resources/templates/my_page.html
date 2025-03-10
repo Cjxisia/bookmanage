@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/css/mypage.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -47,6 +48,10 @@
                 <span class="show-more" onclick="toggleDescription(this)">더 보기</span>
             </div>
             <a class="detail-btn" th:href="${book.link}" target="_blank">🔗 자세히 보기</a>
+
+            <button class="remove-bookmark-btn"
+                    th:data-title="${book.bookTitle}"
+                    onclick="removeBookmark(this)">❌ 북마크 제거</button>
         </div>
     </div>
 
@@ -117,6 +122,23 @@
             description.classList.add('show-full');
             button.textContent = "간략히 보기";
         }
+    }
+
+    function removeBookmark(button) {
+    const bookTitle = button.getAttribute("data-title");
+
+        $.ajax({
+        type: "POST",
+        url: "/removeBookmark",
+        data: { bookTitle: bookTitle },
+        success: function(response) {
+            alert("북마크가 제거되었습니다!");
+            location.reload();
+        },
+            error: function() {
+                alert("오류가 발생했습니다.");
+            }
+        });
     }
 </script>
 </body>

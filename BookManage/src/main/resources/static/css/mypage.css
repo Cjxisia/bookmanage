@@ -66,6 +66,19 @@
     align-self: flex-start;
 }
 
+.remove-bookmark-btn {
+    display: block;
+    margin-top: 15px;
+    background: #555;  /* 빨간색으로 북마크 제거 버튼 강조 */
+    color: white;
+    border: none;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
 /* 스크롤 버튼 스타일 */
 .scroll-button {
     position: absolute;

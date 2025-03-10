@@ -9,6 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.sound.midi.SysexMessage;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class BookService {
     private final BookRepository bookRepository;
@@ -45,6 +49,13 @@ public class BookService {
     }
 
     public void savebooks(BookDto bookDto){
+        Optional<BookEntity> existingBook = bookRepository.findByBookTitle(bookDto.getBookTitle());
+
+        if (existingBook.isPresent()) {
+            System.out.println("북마크할 책이 이미 존재합니다!");
+            return;
+        }
+
         BookEntity bookEntity = new BookEntity();
 
         bookEntity.setBookTitle(bookDto.getBookTitle());
@@ -62,5 +73,18 @@ public class BookService {
         bookEntity.setCategory(category);
 
         bookRepository.save(bookEntity);
+    }
+
+    public void removeBookmark(String username, String bookTitle) {
+        Optional<BookEntity> bookmark = bookRepository.findByUsernameAndBookTitle(username, bookTitle);
+
+        System.out.println("username, bookTitle:" + username + bookTitle);
+
+        if (bookmark.isPresent()) {
+            BookEntity bookEntity = bookmark.get();
+            bookRepository.delete(bookEntity);
+        } else {
+            throw new RuntimeException("북마크가 존재하지 않습니다.");
+        }
     }
 }
